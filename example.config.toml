@@ -1,0 +1,33 @@
+[Database]
+Driver = "sqlite"
+Name = "matebot-web.sqlite"
+Host = ""
+Port = 3306
+User = ""
+Password = ""
+
+[MateBot]
+Url = ""
+User = ""
+Password = ""
+
+[[MateBot.Consumables]]
+Id = 1
+Name = "drink"
+
+[[MateBot.Consumables]]
+Id = 2
+Name = "water"
+
+[[MateBot.Consumables]]
+Id = 3
+Name = "pizza"
+
+[[MateBot.Consumables]]
+Id = 4
+Name = "ice"
+
+[Generic]
+Listen = "127.0.0.1:8080"
+TemplateDir = "templates/"
+StaticDir = "static/"

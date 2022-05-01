@@ -1,0 +1,70 @@
+:root {
+    --level-0: #222432;
+    --level-1: #2b2d3f;
+    --level-2: #2f3244;
+    --level-3: #36394f;
+    --level-4: #3d3f59;
+    --prim-dark: #a548d5;
+    --prim: #bb5fee;
+    --prim-light: #d48cfd;
+    --text: #eeeeee;
+}
+
+body {
+    margin: 0;
+    background-color: var(--level-0);
+    color: var(--text);
+    font-family: Helvetica, "Trebuchet MS", Verdana, sans-serif;
+}
+
+.input {
+    background-color: var(--level-0);
+    border: 1px solid var(--level-4);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    color: var(--text);
+}
+
+.input:hover, .input:focus {
+    border: 1px solid var(--prim);
+}
+
+.button {
+    cursor: pointer;
+    background-color: var(--prim);
+    border-radius: 0.5rem;
+    border: none;
+    padding: 0.5rem;
+}
+
+.button:hover {
+    background-color: var(--prim-light);
+}
+
+.button:active {
+    translate: 2px 2px;
+}
+
+/*
+Login declaration
+ */
+
+.logo {
+    width: 20rem;
+}
+
+.loginContent {
+    margin-top: 3rem;
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+}
+
+.loginBox {
+    background-color: var(--level-1);
+    display: flex;
+    flex-direction: column;
+    padding: 2.5rem;
+    border-radius: 1rem;
+}

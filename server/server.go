@@ -1,0 +1,143 @@
+package server
+
+import (
+	"errors"
+	"fmt"
+	mysqlDriver "github.com/go-sql-driver/mysql"
+	"github.com/hopfenspace/matebot-web/conf"
+	"github.com/hopfenspace/matebot-web/sdk"
+	"github.com/labstack/echo/v4"
+	mw "github.com/labstack/echo/v4/middleware"
+	"github.com/myOmikron/echotools/color"
+	"github.com/myOmikron/echotools/database"
+	"github.com/myOmikron/echotools/execution"
+	"github.com/myOmikron/echotools/middleware"
+	"github.com/myOmikron/echotools/utilitymodels"
+	"github.com/myOmikron/echotools/worker"
+	"github.com/pelletier/go-toml"
+	"gorm.io/driver/mysql"
+	"gorm.io/driver/postgres"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
+	"html/template"
+	"io/fs"
+	"io/ioutil"
+	"net"
+	"net/url"
+	"os"
+	"path"
+	"strconv"
+	"time"
+)
+
+func StartServer(configPath string) {
+	config := &conf.Config{}
+
+	if configBytes, err := ioutil.ReadFile(configPath); errors.Is(err, fs.ErrNotExist) {
+		color.Printf(color.RED, "Config was not found at %s\n", configPath)
+		b, _ := toml.Marshal(config)
+		fmt.Print(string(b))
+		os.Exit(1)
+	} else {
+		if err := toml.Unmarshal(configBytes, config); err != nil {
+			panic(err)
+		}
+	}
+
+	// Check for valid config values
+	if err := config.CheckConfig(); err != nil {
+		fmt.Println(err.Error())
+		os.Exit(1)
+	}
+
+	// Database
+	var driver gorm.Dialector
+	switch config.Database.Driver {
+	case "sqlite":
+		driver = sqlite.Open(config.Database.Name)
+	case "mysql":
+		mysqlConf := mysqlDriver.NewConfig()
+		mysqlConf.Net = fmt.Sprintf("tcp(%s)", net.JoinHostPort(config.Database.Host, strconv.Itoa(int(config.Database.Port))))
+		mysqlConf.DBName = config.Database.Name
+		mysqlConf.User = config.Database.User
+		mysqlConf.Passwd = config.Database.Password
+		mysqlConf.ParseTime = true
+		mysqlConf.Params = map[string]string{
+			"charset": "utf8mb4",
+		}
+		driver = mysql.Open(mysqlConf.FormatDSN())
+	case "postgresql":
+		dsn := url.URL{
+			Scheme: "postgres",
+			User:   url.UserPassword(config.Database.User, config.Database.Password),
+			Host:   net.JoinHostPort(config.Database.Host, strconv.Itoa(int(config.Database.Port))),
+			Path:   config.Database.Name,
+		}
+		driver = postgres.Open(dsn.String())
+	}
+
+	db := database.Initialize(
+		driver,
+		&utilitymodels.Session{},
+		&utilitymodels.User{},
+	)
+
+	// Web server
+	e := echo.New()
+	e.HideBanner = true
+
+	// SDK client
+	client := sdk.New(config.MateBot.Url)
+	if err := client.Login(config.MateBot.User, config.MateBot.Password); err != nil {
+		fmt.Println("[SDK]: Error while logging in:", err.Error())
+	}
+	if err := client.SetApplicationID(config.MateBot.User); err != nil {
+		fmt.Println("[SDK]: Error while retrieving application ID:", err.Error())
+	}
+
+	// Worker pool
+	wp := worker.NewPool(&worker.PoolConfig{
+		NumWorker: 10,
+		QueueSize: 100,
+	})
+	wp.Start()
+
+	// Template rendering
+	renderer := &TemplateRenderer{
+		templates: template.Must(template.ParseGlob(path.Join(config.Generic.TemplateDir, "*.gohtml"))),
+	}
+	e.Renderer = renderer
+
+	// Middleware
+	e.Use(mw.Logger())
+	e.Use(mw.Recover())
+
+	duration := time.Hour * 24
+	e.Use(middleware.Session(db, &middleware.SessionConfig{
+		CookieName: "sessionid",
+		CookieAge:  &duration,
+	}))
+	_ = &middleware.SecurityConfig{
+		AllowedHosts: []middleware.AllowedHost{
+			{Host: "127.0.0.1:8000", Https: false},
+			{Host: "10.1.1.28:443", Https: true},
+		},
+		UseForwardedProtoHeader: true,
+	}
+	//e.Use(middleware.Security(secConfig))
+
+	// Router
+	defineRoutes(e, db, config, client, wp)
+
+	execution.SignalStart(e, config.Generic.Listen, &execution.Config{
+		ReloadFunc: func() {
+			StartServer(configPath)
+		},
+		StopFunc: func() {
+
+		},
+		TerminateFunc: func() {
+
+		},
+	})
+}

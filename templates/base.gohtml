@@ -1,0 +1,32 @@
+{{define "base"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/static/css/matebot.css" type="text/css" rel="stylesheet">
+    <link href="/static/css/preloader.css" type="text/css" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="https://cdn.skypack.dev/react-toastify/dist/ReactToastify.css">
+    <script src="/static/js/m_base.js" type="module" defer></script>
+    <title>MateBot Web</title>
+</head>
+<body id="stop-scrolling">
+    <div id="preloader" class="preloader">
+        <div class="preloaderContent">
+            <div class="preloaderLeftTop"></div>
+            <div class="preloaderMidTop"></div>
+            <div class="preloaderRightTop"></div>
+
+            <div class="preloaderLeftMid"></div>
+            <div class="preloaderMidMid"></div>
+            <div class="preloaderRightMid"></div>
+
+            <div class="preloaderLeftBottom"></div>
+            <div class="preloaderMidBottom"></div>
+            <div class="preloaderRightBottom"></div>
+        </div>
+    </div>
+    <div id="root"></div>
+</body>
+</html>
+{{end}}
