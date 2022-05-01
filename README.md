@@ -21,6 +21,14 @@ curl -fsSL https://deb.nodesource.com/setup_lts.x | bash -
 apt-get install -y nodejs
 ```
 
+Compile and install the project itself:
+```bash
+git clone https://github.com/hopfenspace/matebot-web.git
+cd matebot-web
+make
+make install
+```
+
 ## Configuration
 
 ```bash
