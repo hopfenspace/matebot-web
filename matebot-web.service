@@ -1,0 +1,27 @@
+[Unit]
+Description=MateBot Web Server
+After=network.target
+
+[Service]
+Type=simple
+User=matebot-web
+Group=matebot-web
+
+LogsDirectory=matebot-web
+StateDirectory=matebot-web
+WorkingDirectory=/var/lib/matebot-web
+ConfigurationDirectory=matebot-web
+
+ExecStart=/usr/local/bin/matebot-web
+ExecReload=/usr/bin/kill -s HUP $MAINPID
+ExecStop=/usr/bin/kill -s INT $MAINPID
+
+Restart=always
+RestartSec=3
+# Send SIGTERM to each process
+KillMode=control-group
+TimeoutStopSec=3
+
+
+[Install]
+WantedBy=multi-user.target

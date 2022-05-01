@@ -10,7 +10,7 @@ func main() {
 	parser := argparse.NewParser("matebot-web", "", &argparse.ParserConfig{DisableDefaultShowHelp: true})
 
 	configPath := parser.String("", "config-path", &argparse.Option{
-		Default: "config.toml",
+		Default: "/etc/matebot-web/config.toml",
 		Help:    "Specify an alternative path to the configuration file.",
 	})
 
