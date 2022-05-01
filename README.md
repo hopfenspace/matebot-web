@@ -34,3 +34,33 @@ make install
 ```bash
 cp /etc/matebot-web/example.config.toml /etc/matebot-web/config.toml
 ```
+
+### Reverse Proxy
+It is recommended to deploy matebot-web behind a reverse proxy. Nginx is used as reference.
+
+Install nginx:
+```bash
+apt-get install nginx
+```
+
+Copy nginx configuration file:
+```bash
+cp matebot-web.nginx /etc/nginx/sites-available/
+ln -s /etc/nginx/sites-available/matebot-web.nginx /etc/nginx/sites-enabled/
+```
+
+Set `SERVER_NAME` to the vhost, your server can be accessed by:
+```bash
+sed -i -E 's/SERVER_NAME/your-server-name/' /etc/nginx/sites-available/matebot-web.nginx
+```
+
+Set `SSL_CERT_PATH` and `SSL_CERT_KEY_PATH` to a certificate, that is valid for `SERVER_NAME`:
+```bash
+sed -i -E 's/SSL_CERT_PATH/\/path\/to\/cert\.pem/' /etc/nginx/sites-available/matebot-web.nginx
+sed -i -E 's/SSL_CERT_KEY_PATH/\/path\/to\/key\.pem/' /etc/nginx/sites-available/matebot-web.nginx
+```
+
+Finally, start nginx:
+```bash
+systemctl start nginx
+```
