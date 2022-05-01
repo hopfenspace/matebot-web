@@ -28,6 +28,6 @@ Id = 4
 Name = "ice"
 
 [Generic]
-Listen = "127.0.0.1:8080"
+Listen = "127.0.0.1:8000"
 TemplateDir = "templates/"
 StaticDir = "static/"

@@ -45,19 +45,19 @@ apt-get install nginx
 
 Copy nginx configuration file:
 ```bash
-cp matebot-web.nginx /etc/nginx/sites-available/
-ln -s /etc/nginx/sites-available/matebot-web.nginx /etc/nginx/sites-enabled/
+cp matebot-web.nginx /etc/nginx/sites-available/matebot-web.conf
+ln -s /etc/nginx/sites-available/matebot-web.conf /etc/nginx/sites-enabled/
 ```
 
 Set `SERVER_NAME` to the vhost, your server can be accessed by:
 ```bash
-sed -i -E 's/SERVER_NAME/your-server-name/' /etc/nginx/sites-available/matebot-web.nginx
+sed -i -E 's/SERVER_NAME/your-server-name/' /etc/nginx/sites-available/matebot-web.conf
 ```
 
 Set `SSL_CERT_PATH` and `SSL_CERT_KEY_PATH` to a certificate, that is valid for `SERVER_NAME`:
 ```bash
-sed -i -E 's/SSL_CERT_PATH/\/path\/to\/cert\.pem/' /etc/nginx/sites-available/matebot-web.nginx
-sed -i -E 's/SSL_CERT_KEY_PATH/\/path\/to\/key\.pem/' /etc/nginx/sites-available/matebot-web.nginx
+sed -i -E 's/SSL_CERT_PATH/\/path\/to\/cert\.pem/' /etc/nginx/sites-available/matebot-web.conf
+sed -i -E 's/SSL_CERT_KEY_PATH/\/path\/to\/key\.pem/' /etc/nginx/sites-available/matebot-web.conf
 ```
 
 Finally, start nginx:
