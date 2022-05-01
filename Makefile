@@ -19,6 +19,10 @@ clean:
 .PHONY: build
 build:
 	${GO} build -o ${OUT_DIR}/ ${FILE_DIR}/...
+	npm init -y
+	npm install babel-cli@6 babel-preset-react-app@3
+	npx babel js_src --out-dir static/js --presets react-app/prod --minified --ignore=m_sdk.js
+	cp js_src/lib/m_sdk.js static/js/lib/
 
 .PHONY: install
 install:
