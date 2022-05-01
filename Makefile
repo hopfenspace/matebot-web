@@ -38,6 +38,7 @@ install:
 	else \
 		ln -s /usr/lib/systemd/system/matebot-web.service /etc/systemd/system/multi-user.target.wants/; \
 	fi
+	useradd -U -r -m -b /var/lib/ matebot-web
 	systemctl daemon-reload
 	systemctl enable matebot-web
 	mkdir -p -m 0740 /etc/matebot-web/ /var/lib/matebot-web/
