@@ -1,20 +1,23 @@
 :root {
     --level-0: #222432;
     --level-1: #2b2d3f;
-    --level-2: #2f3244;
-    --level-3: #36394f;
+    --level-2: #3c4059;
+    --level-3: #525779;
     --level-4: #3d3f59;
     --prim-dark: #a548d5;
     --prim: #bb5fee;
     --prim-light: #d48cfd;
     --text: #eeeeee;
+    --text-dark: #bbbbbb;
+    --green: #61a861;
+    --red: #fd674f  ;
 }
 
 body {
     margin: 0;
     background-color: var(--level-0);
     color: var(--text);
-    font-family: Helvetica, "Trebuchet MS", Verdana, sans-serif;
+    font-family: BlinkMacSystemFont,"Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helvetica Neue", sans-serif;
 }
 
 .input {
@@ -49,6 +52,10 @@ body {
 Login declaration
  */
 
+.invert {
+    filter: invert(100%);
+}
+
 .logo {
     width: 20rem;
 }
@@ -67,4 +74,315 @@ Login declaration
     flex-direction: column;
     padding: 2.5rem;
     border-radius: 1rem;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    height: 4rem;
+    background-color: var(--level-1);
+}
+
+.topbarHeading {
+    margin: 0;
+    font-weight: normal;
+}
+
+.topbarItem {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 8rem;
+    cursor: pointer;
+    transition: all ease-in-out 200ms;
+    background: none;
+    border: none;
+}
+
+.topbarItem img {
+    width: 3rem;
+}
+
+.topbarItem:hover {
+    background-color: var(--level-3);
+}
+
+.dashboardBox {
+    background-color: var(--level-1);
+    padding: 2rem;
+    border-radius: 1rem;
+}
+
+.dashboard {
+    margin: 1rem 1rem 0 1rem;
+    display: grid;
+    grid-gap: 1rem;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: auto auto auto auto auto;
+}
+
+.dashboardGlobalStatistics {
+    grid-area: 1 / 1 / span 2 / span 1;
+}
+
+.dashboardPolls {
+    grid-area: 1 / 5 / span 3 / span 2;
+}
+
+.dashboardBalance {
+    grid-area: 1 / 2 / span 2 / span 3;
+}
+
+.dashboardTransfer {
+    grid-area: 3 / 1 / span 2 / span 1;
+}
+
+.dashboardConsume {
+    grid-area: 5 / 1 / span 2 / span 1;
+}
+
+.dashboardTransactionAnalysis {
+    grid-area: 4 / 5 / span 3 / span 1;
+}
+
+.dashboardTransactionHistory {
+    grid-area: 3 / 2 / span 4 / span 3;
+}
+
+.dashboardUserState {
+    grid-area: 4 / 6 / span 3 / span 1;
+}
+
+.textImageButton {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 2rem 0.5rem 2rem;
+    color: var(--text);
+    cursor: pointer;
+    background-color: var(--level-1);
+    border: none;
+    border-radius: 1rem;
+    transition: all ease-in-out 200ms;
+}
+
+.poll {
+    display: flex;
+    width: 100%;
+}
+
+.pollList {
+    height: 15rem;
+    overflow-y: scroll;
+}
+
+.pollTable {
+    border-collapse: collapse;
+
+}
+
+.pollTable tr {
+    cursor: pointer;
+    background-color: var(--level-1);
+    transition: all ease-in-out 200ms;
+}
+
+.pollTable tr:hover {
+    background-color: var(--level-2);
+}
+
+.pollTable tr td {
+    padding: 0.25rem 1rem 0.25rem 1rem;
+    border-bottom: 1px solid var(--level-3);
+}
+
+.pollTable tr td:last-child {
+    text-align: right;
+}
+
+.textImageButton img {
+    margin-left: 1rem;
+    height: 1.5rem;
+}
+
+.textImageButton:hover {
+    background-color: var(--level-2);
+}
+
+.balanceContent {
+    display: flex;
+}
+
+.balanceAmount {
+    font-size: 3.5rem;
+    word-break: keep-all;
+    width: max-content;
+}
+
+.transactionHistory {
+    height: 25rem;
+    overflow-y: scroll;
+}
+
+.transactionHistoryExport {
+    margin-top: 1rem;
+    display: flex;
+}
+
+.transactionHistoryExportButton {
+    display: flex;
+    cursor: pointer;
+    padding: 0.5rem 2rem 0.5rem 2rem;
+    align-items: center;
+    margin-right: 2rem;
+    background-color: var(--level-1);
+    color: var(--text-dark);
+    border: none;
+    border-radius: 1rem;
+    transition: all ease-in-out 200ms;
+}
+
+.transactionHistoryExportButton img {
+    margin-left: 1rem;
+    height: 1rem;
+}
+
+.transactionHistoryExportButton:hover {
+    background-color: var(--level-2);
+    color: var(--text);
+}
+
+.transfers {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto;
+    grid-gap: 1rem;
+}
+
+.consumables {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    grid-gap: 1rem;
+}
+
+.consumable {
+    background-color: var(--level-1);
+    cursor: pointer;
+    border-radius: 2rem;
+    padding: 1rem;
+    transition: all ease-in-out 200ms;
+    border: none;
+}
+
+.consumable:hover {
+    background-color: var(--level-4);
+}
+
+.consumable img {
+    width: 4rem;
+}
+
+.transactionAnalysisContent {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.transactionAnalysisRow {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    padding-bottom: 0.5rem;
+}
+
+.transactionAnalysisItem {
+    margin-right: 0.5rem;
+    background-color: var(--level-2);
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+}
+
+.transactionAnalysisItem img {
+    height: 2.5rem;
+}
+
+.transactionAnalysisItemRow {
+    display: flex;
+    justify-content: space-between;
+    width: 15rem;
+    align-items: center;
+}
+
+.text {
+    padding: 0;
+    margin: 0;
+}
+
+.normal {
+    font-weight: normal;
+}
+
+.small {
+    font-size: small;
+}
+
+.heading {
+    font-weight: normal;
+    margin: 0 0 1rem 0;
+}
+
+.dashboardTransactionTable {
+    width: 100%;
+    border-collapse: collapse;
+    overflow-y: scroll;
+    max-height: 20rem;
+}
+
+.dashboardTransactionTable tr td {
+    border-bottom: 1px solid var(--level-3);
+}
+
+.transactionRow {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.transactionHint {
+    font-size: small;
+    color: var(--text-dark);
+}
+
+.red {
+    color: var(--red);
+}
+
+.green {
+    color: var(--green);
+}
+
+.rightAligned {
+    text-align: right;
+}
+
+.globalStatisticsTable {
+    width: 100%;
+}
+
+.pollCurrent {
+    margin-left: 1rem;
+    padding-left: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-left: 1px solid var(--level-2);
+}
+
+.pollCurrentButtons {
+    display: flex;
+    justify-content: space-evenly;
 }
