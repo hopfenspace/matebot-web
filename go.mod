@@ -7,7 +7,7 @@ require (
 	github.com/hellflame/argparse v1.8.0
 	github.com/labstack/echo/v4 v4.7.2
 	github.com/monaco-io/request v1.0.15
-	github.com/myOmikron/echotools v0.0.0-20220430195827-10c6fc75461e
+	github.com/myOmikron/echotools v0.0.0-20220501224102-9337a18a64c5
 	github.com/pelletier/go-toml v1.9.5
 	gorm.io/driver/mysql v1.3.3
 	gorm.io/driver/postgres v1.3.5
@@ -39,7 +39,7 @@ require (
 	github.com/valyala/fasttemplate v1.2.1 // indirect
 	golang.org/x/crypto v0.0.0-20220427172511-eb4f295cb31f // indirect
 	golang.org/x/net v0.0.0-20220425223048-2871e0cb64e4 // indirect
-	golang.org/x/sys v0.0.0-20220429233432-b5fbb4746d32 // indirect
+	golang.org/x/sys v0.0.0-20220503163025-988cb79eb6c6 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20220411224347-583f2d630306 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect

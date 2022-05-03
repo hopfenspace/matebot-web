@@ -116,8 +116,8 @@ github.com/modern-go/reflect2 v1.0.2 h1:xBagoLtFs94CBntxluKeaWgTMpvLxC4ur3nMaC9G
 github.com/modern-go/reflect2 v1.0.2/go.mod h1:yWuevngMOJpCy52FWWMvUC8ws7m/LJsjYzDa0/r8luk=
 github.com/monaco-io/request v1.0.15 h1:krhHE0yL6yL+xP0YwX5udyd+xnfQfHccop3Nsixec54=
 github.com/monaco-io/request v1.0.15/go.mod h1:voq81GC2YDynQM3W/4D6oqGhqb+u7zULvbLzFkTmDfo=
-github.com/myOmikron/echotools v0.0.0-20220430195827-10c6fc75461e h1:5n0lVeBSEHyXpy/jULbM/PLVOeGszEbVm0oFONrhmHg=
-github.com/myOmikron/echotools v0.0.0-20220430195827-10c6fc75461e/go.mod h1:1ookg7BmXc1kdqqhHelZjDr2dpn49JK+8igCn3NaMbA=
+github.com/myOmikron/echotools v0.0.0-20220501224102-9337a18a64c5 h1:BKDgth+S+8kZ3qiBAcOf2XlwSv7QxhfI9Ypl1SwX+WQ=
+github.com/myOmikron/echotools v0.0.0-20220501224102-9337a18a64c5/go.mod h1:1ookg7BmXc1kdqqhHelZjDr2dpn49JK+8igCn3NaMbA=
 github.com/myOmikron/masochism v0.0.0-20220331222721-8612043c2e05 h1:2fQ9SxR/+ReOCxBA50Bpnygfna+fdqhcK+8Vb46PMu8=
 github.com/myOmikron/masochism v0.0.0-20220331222721-8612043c2e05/go.mod h1:tVE+H3haDKrzvWlalGjN10ubJUpYMTTE9oXLJBxilx4=
 github.com/pelletier/go-toml v1.9.5 h1:4yBQzkHv+7BHq2PQUZF3Mx0IYxG7LsP222s7Agd3ve8=
@@ -199,8 +199,8 @@ golang.org/x/sys v0.0.0-20210615035016-665e8c7367d1/go.mod h1:oPkhp1MJrh7nUepCBc
 golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/sys v0.0.0-20210927094055-39ccf1dd6fa6/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/sys v0.0.0-20211103235746-7861aae1554b/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
-golang.org/x/sys v0.0.0-20220429233432-b5fbb4746d32 h1:Js08h5hqB5xyWR789+QqueR6sDE8mk+YvpETZ+F6X9Y=
-golang.org/x/sys v0.0.0-20220429233432-b5fbb4746d32/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
+golang.org/x/sys v0.0.0-20220503163025-988cb79eb6c6 h1:nonptSpoQ4vQjyraW20DXPAglgQfVnM9ZC6MmNLMR60=
+golang.org/x/sys v0.0.0-20220503163025-988cb79eb6c6/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/term v0.0.0-20201117132131-f5c789dd3221/go.mod h1:Nr5EML6q2oocZ2LXRh80K7BxOlk5/8JxuGnuhpl+muw=
 golang.org/x/term v0.0.0-20201126162022-7de9c90e9dd1/go.mod h1:bj7SfCRtBDWHUb9snDiAeCFNEtKQo2Wmx5Cou7ajbmo=
 golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
