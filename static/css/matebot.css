@@ -34,14 +34,15 @@ body {
 
 .button {
     cursor: pointer;
-    background-color: var(--prim);
+    background-color: var(--level-1);
     border-radius: 0.5rem;
-    border: none;
+    border: 1px solid var(--level-3);
     padding: 0.5rem;
+    color: var(--text)
 }
 
 .button:hover {
-    background-color: var(--prim-light);
+    background-color: var(--level-3);
 }
 
 .button:active {
