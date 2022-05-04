@@ -491,6 +491,10 @@ Login declaration
         grid-area: 2 / 3 / span 1 / span 1;
     }
 
+    .globalStatisticsContent {
+        grid-template-columns: 1fr;
+    }
+
     .dashboardTransactionHistory {
         grid-area: 3 / 1 / span 2 / span 3;
     }
@@ -549,6 +553,10 @@ Login declaration
         grid-area: 5 / 2 / span 1 / span 1;
     }
 
+    .globalStatisticsContent {
+        grid-template-columns: 1fr;
+    }
+
     .dashboardPolls {
         grid-area: 6 / 1 / span 1 / span 2;
     }
@@ -601,6 +609,10 @@ Login declaration
 
     .dashboardGlobalStatistics {
         grid-area: 7 / 1 / span 1 / span 1;
+    }
+
+    .globalStatisticsContent {
+        grid-template-columns: 1fr 1fr;
     }
 
     .dashboardPolls {
