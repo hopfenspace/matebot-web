@@ -35,7 +35,6 @@ export default class LoginView extends React.Component {
             <div className="loginBox">
                 <img className="logo"
                      alt="logo"
-                     style={{marginBottom: "2rem"}}
                      src={this.context.static + "img/matebot_white_1024.png"} />
                 <label>Username</label>
                 <TextInput className="input"

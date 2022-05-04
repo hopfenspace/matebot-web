@@ -59,6 +59,7 @@ Login declaration
 
 .logo {
     width: 20rem;
+    margin-bottom: 2rem;
 }
 
 .loginContent {
@@ -85,7 +86,7 @@ Login declaration
     background-color: var(--level-1);
 }
 
-.topbarHead ing {
+.topbarHead img {
     margin: 0;
     font-weight: normal;
 }
@@ -285,6 +286,7 @@ Login declaration
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto auto;
     grid-gap: 1rem;
+    height: calc(100% - 3rem);
 }
 
 .consumable {
@@ -394,8 +396,24 @@ Login declaration
     text-align: right;
 }
 
-.globalStatisticsTable {
+.globalStatistic {
+    font-size: 2rem;
+}
+
+.globalStatisticsContent {
     width: 100%;
+    height: calc(100% - 3rem);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    grid-gap: 1rem;
+}
+
+.globalStatisticsContent div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 @media screen and (max-width: 1800px) {
@@ -629,11 +647,16 @@ Login declaration
     }
 
     .dashboard {
-        margin: 1rem 1rem 0 1rem;
+        margin: 1rem 0 1rem 0;
         display: grid;
         grid-gap: 1rem;
         grid-template-columns: 1fr;
         grid-template-rows: auto auto auto auto auto auto auto auto auto;
+    }
+
+    .dashboardBox {
+        border-radius: unset;
+        padding: 1rem
     }
 
     .dashboardBalance {
@@ -646,14 +669,6 @@ Login declaration
 
     .rv-xy-plot {
         display: none;
-    }
-
-    .transfers {
-        display: grid;
-        grid-auto-columns: auto;
-        grid-auto-rows: auto;
-        grid-template-columns: unset;
-        grid-template-rows: unset;
     }
 
     .dashboardConsume {
@@ -695,13 +710,23 @@ Login declaration
         padding-left: unset;
     }
 
-    .dashboardTransactionTable tr td:nth-child(4),
-    .dashboardTransactionTable tr td:nth-child(3)
+    .dashboardTransactionTable tr td:nth-child(3),
+    .dashboardTransactionTable tr td:nth-child(4)
     {
         display: none;
     }
 
     .dashboardUserState {
         grid-area: 9 / 1 / span 1 / span 1;
+    }
+
+    .logo {
+        width: 15rem;
+        margin-bottom: 2rem;
+    }
+
+    .loginContent {
+        margin: 0;
+        background-color: var(--level-1);
     }
 }
