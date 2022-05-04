@@ -37,28 +37,28 @@ Preloader
 
 @keyframes bounceLeftTop {
     50% {
-        transform: translateX(-4rem) translateY(-4rem) scale(200%);
+        transform: translateX(-4vw) translateY(-4vw) scale(200%);
         background-color: var(--prim-dark);
     }
 }
 
 @keyframes bounceRightTop {
     50% {
-        transform: translateX(4rem) translateY(-4rem) scale(200%);
+        transform: translateX(4vw) translateY(-4vw) scale(200%);
         background-color: var(--prim-dark);
     }
 }
 
 @keyframes bounceLeftBottom {
     50% {
-        transform: translateX(-4rem) translateY(4rem) scale(200%);
+        transform: translateX(-4vw) translateY(4vw) scale(200%);
         background-color: var(--prim-dark);
     }
 }
 
 @keyframes bounceRightBottom {
     50% {
-        transform: translateX(4rem) translateY(4rem) scale(200%);
+        transform: translateX(4vw) translateY(4vw) scale(200%);
         background-color: var(--prim-dark);
     }
 }
@@ -71,86 +71,86 @@ Preloader
 }
 
 .preloaderLeftTop {
-    width: 4rem;
-    height: 4rem;
+    width: 4vw;
+    height: 4vw;
     position: inherit;
-    translate: -6rem 10rem;
-    border-radius: 0.5rem;
+    translate: -6vw 10vw;
+    border-radius: 0.5vw;
     background-color: var(--prim);
     animation: bounceLeftTop 1.5s ease-in-out infinite;
 }
 
 .preloaderMidTop {
-    width: 4rem;
-    height: 4rem;
-    translate: 0 6rem;
+    width: 4vw;
+    height: 4vw;
+    translate: 0 6vw;
     position: inherit;
-    border-radius: 0.5rem;
+    border-radius: 0.5vw;
     background-color: var(--prim);
 }
 
 .preloaderRightTop {
-    width: 4rem;
-    height: 4rem;
+    width: 4vw;
+    height: 4vw;
     position: inherit;
-    translate: 6rem 2rem;
-    border-radius: 0.5rem;
+    translate: 6vw 2vw;
+    border-radius: 0.5vw;
     background-color: var(--prim);
     animation: bounceRightTop 1.5s ease-in-out infinite;
 }
 
 .preloaderLeftMid {
-    width: 4rem;
-    height: 4rem;
+    width: 4vw;
+    height: 4vw;
     position: inherit;
-    translate: -6rem 4rem;
-    border-radius: 0.5rem;
+    translate: -6vw 4vw;
+    border-radius: 0.5vw;
     background-color: var(--prim);
 }
 
 .preloaderMidMid {
-    width: 4rem;
-    height: 4rem;
+    width: 4vw;
+    height: 4vw;
     position: inherit;
-    border-radius: 0.5rem;
+    border-radius: 0.5vw;
     background-color: var(--prim);
     animation: bounceBack 1.5s ease-in-out infinite;
 }
 
 .preloaderRightMid {
-    width: 4rem;
-    height: 4rem;
+    width: 4vw;
+    height: 4vw;
     position: inherit;
-    translate: 6rem -4rem;
-    border-radius: 0.5rem;
+    translate: 6vw -4vw;
+    border-radius: 0.5vw;
     background-color: var(--prim);
 }
 
 .preloaderLeftBottom {
-    width: 4rem;
-    height: 4rem;
+    width: 4vw;
+    height: 4vw;
     position: inherit;
-    translate: -6rem -2rem;
-    border-radius: 0.5rem;
+    translate: -6vw -2vw;
+    border-radius: 0.5vw;
     background-color: var(--prim);
     animation: bounceLeftBottom 1.5s ease-in-out infinite;
 }
 
 .preloaderMidBottom {
-    width: 4rem;
-    height: 4rem;
+    width: 4vw;
+    height: 4vw;
     position: inherit;
-    translate: 0 -6rem;
-    border-radius: 0.5rem;
+    translate: 0 -6vw;
+    border-radius: 0.5vw;
     background-color: var(--prim);
 }
 
 .preloaderRightBottom {
-    width: 4rem;
-    height: 4rem;
+    width: 4vw;
+    height: 4vw;
     position: inherit;
-    translate: 6rem -10rem;
-    border-radius: 0.5rem;
+    translate: 6vw -10vw;
+    border-radius: 0.5vw;
     background-color: var(--prim);
     animation: bounceRightBottom 1.5s ease-in-out infinite;
 }

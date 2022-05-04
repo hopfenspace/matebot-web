@@ -85,7 +85,7 @@ Login declaration
     background-color: var(--level-1);
 }
 
-.topbarHeading {
+.topbarHead ing {
     margin: 0;
     font-weight: normal;
 }
@@ -159,7 +159,7 @@ Login declaration
 .textImageButton {
     display: flex;
     align-items: center;
-    padding: 0.5rem 2rem 0.5rem 2rem;
+    padding: 0.5rem 1rem 0.5rem 1rem;
     color: var(--text);
     cursor: pointer;
     background-color: var(--level-1);
@@ -176,11 +176,12 @@ Login declaration
 .pollList {
     height: 15rem;
     overflow-y: scroll;
+    width: 100%;
 }
 
 .pollTable {
     border-collapse: collapse;
-
+    width: 100%;
 }
 
 .pollTable tr {
@@ -200,6 +201,21 @@ Login declaration
 
 .pollTable tr td:last-child {
     text-align: right;
+}
+
+.pollCurrent {
+    margin-left: 1rem;
+    padding-left: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-left: 1px solid var(--level-2);
+    width: 100%;
+}
+
+.pollCurrentButtons {
+    display: flex;
+    justify-content: space-evenly;
 }
 
 .textImageButton img {
@@ -228,7 +244,11 @@ Login declaration
 
 .transactionHistoryExport {
     margin-top: 1rem;
-    display: flex;
+    display: grid;
+    grid-gap: 1rem;
+    grid-template-rows: auto;
+    grid-template-columns: 1fr 1fr;
+    width: fit-content;
 }
 
 .transactionHistoryExportButton {
@@ -236,7 +256,6 @@ Login declaration
     cursor: pointer;
     padding: 0.5rem 2rem 0.5rem 2rem;
     align-items: center;
-    margin-right: 2rem;
     background-color: var(--level-1);
     color: var(--text-dark);
     border: none;
@@ -288,31 +307,36 @@ Login declaration
 .transactionAnalysisContent {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    width: 100%;
 }
 
 .transactionAnalysisRow {
     display: flex;
-    justify-content: left;
+    justify-content: space-between;
     align-items: center;
     padding-bottom: 0.5rem;
 }
 
 .transactionAnalysisItem {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+}
+
+.transactionAnalysisIcon {
     margin-right: 0.5rem;
     background-color: var(--level-2);
     padding: 0.5rem;
     border-radius: 0.5rem;
 }
 
-.transactionAnalysisItem img {
+.transactionAnalysisIcon img {
     height: 2.5rem;
 }
 
 .transactionAnalysisItemRow {
     display: flex;
     justify-content: space-between;
-    width: 15rem;
     align-items: center;
 }
 
@@ -374,16 +398,310 @@ Login declaration
     width: 100%;
 }
 
-.pollCurrent {
-    margin-left: 1rem;
-    padding-left: 1rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    border-left: 1px solid var(--level-2);
+@media screen and (max-width: 1800px) {
+    .dashboard {
+        margin: 1rem 1rem 0 1rem;
+        display: grid;
+        grid-gap: 1rem;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        grid-template-rows: auto auto auto auto auto auto auto auto auto;
+    }
+
+    .dashboardGlobalStatistics {
+        grid-area: 1 / 1 / span 1 / span 1;
+    }
+
+    .dashboardBalance {
+        grid-area: 1 / 2 / span 1 / span 3;
+    }
+
+    .dashboardTransfer {
+        grid-area: 2 / 1 / span 1 / span 1;
+    }
+
+    .dashboardTransactionHistory {
+        grid-area: 2 / 2 / span 2 / span 3;
+    }
+
+    .dashboardConsume {
+        grid-area: 3 / 1 / span 1 / span 1;
+    }
+
+    .dashboardPolls {
+        grid-area: 4 / 1 / span 1 / span 2;
+    }
+
+    .dashboardTransactionAnalysis {
+        grid-area: 4 / 3 / span 1 / span 1;
+    }
+
+    .dashboardUserState {
+        grid-area: 4 / 4 / span 1 / span 1;
+    }
 }
 
-.pollCurrentButtons {
-    display: flex;
-    justify-content: space-evenly;
+@media screen and (max-width: 1100px) {
+    .dashboard {
+        margin: 1rem 1rem 0 1rem;
+        display: grid;
+        grid-gap: 1rem;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: auto auto auto auto auto auto auto auto auto;
+    }
+
+    .dashboardBalance {
+        grid-area: 1 / 1 / span 1 / span 3;
+    }
+
+    .dashboardTransfer {
+        grid-area: 2 / 1 / span 1 / span 1;
+    }
+
+    .transfers {
+        display: grid;
+        grid-auto-columns: auto;
+        grid-auto-rows: auto;
+        grid-template-rows: unset;
+        grid-template-columns: unset;
+    }
+
+    .dashboardConsume {
+        grid-area: 2 / 2 / span 1 / span 1;
+    }
+
+    .dashboardGlobalStatistics {
+        grid-area: 2 / 3 / span 1 / span 1;
+    }
+
+    .dashboardTransactionHistory {
+        grid-area: 3 / 1 / span 2 / span 3;
+    }
+
+    .dashboardTransactionAnalysis {
+        grid-area: 5 / 1 / span 1 / span 2;
+    }
+
+    .dashboardUserState {
+        grid-area: 5 / 3 / span 1 / span 1;
+    }
+
+    .dashboardPolls {
+        grid-area: 6 / 1 / span 1 / span 3;
+    }
+}
+
+@media screen and (max-width: 900px) {
+    .dashboard {
+        margin: 1rem 1rem 0 1rem;
+        display: grid;
+        grid-gap: 1rem;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto auto auto auto auto auto auto auto;
+    }
+
+    .dashboardBalance {
+        grid-area: 1 / 1 / span 1 / span 2;
+    }
+
+    .dashboardTransfer {
+        grid-area: 2 / 1 / span 1 / span 1;
+    }
+
+    .transfers {
+        display: grid;
+        grid-auto-columns: unset;
+        grid-auto-rows: unset;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto;
+    }
+
+    .dashboardConsume {
+        grid-area: 2 / 2 / span 1 / span 1;
+    }
+
+    .dashboardTransactionHistory {
+        grid-area: 3 / 1 / span 2 / span 2;
+    }
+
+    .dashboardTransactionAnalysis {
+        grid-area: 5 / 1 / span 1 / span 1;
+    }
+
+    .dashboardGlobalStatistics {
+        grid-area: 5 / 2 / span 1 / span 1;
+    }
+
+    .dashboardPolls {
+        grid-area: 6 / 1 / span 1 / span 2;
+    }
+
+    .dashboardUserState {
+        grid-area: 7 / 1 / span 1 / span 2;
+    }
+}
+
+@media screen and (max-width: 750px) {
+    .dashboard {
+        margin: 1rem 1rem 0 1rem;
+        display: grid;
+        grid-gap: 1rem;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto auto auto auto auto auto auto;
+    }
+
+    .dashboardBalance {
+        grid-area: 1 / 1 / span 1 / span 1;
+    }
+
+    .dashboardTransfer {
+        grid-area: 2 / 1 / span 1 / span 1;
+    }
+
+    .rv-xy-plot {
+        display: none;
+    }
+
+    .transfers {
+        display: grid;
+        grid-auto-columns: unset;
+        grid-auto-rows: unset;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: auto;
+    }
+
+    .dashboardConsume {
+        grid-area: 3 / 1 / span 1 / span 1;
+    }
+
+    .dashboardTransactionHistory {
+        grid-area: 4 / 1 / span 2 / span 1;
+    }
+
+    .dashboardTransactionAnalysis {
+        grid-area: 6 / 1 / span 1 / span 1;
+    }
+
+    .dashboardGlobalStatistics {
+        grid-area: 7 / 1 / span 1 / span 1;
+    }
+
+    .dashboardPolls {
+        grid-area: 8 / 1 / span 1 / span 1;
+    }
+
+    .poll {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .pollCurrent {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        border-top: 1px solid var(--level-2);
+        border-left: unset;
+        width: 100%;
+        margin-left: unset;
+        padding-left: unset;
+    }
+
+    .dashboardTransactionTable tr td:nth-child(4),
+    .dashboardTransactionTable tr td:nth-child(3)
+    {
+        display: none;
+    }
+
+    .dashboardUserState {
+        grid-area: 9 / 1 / span 1 / span 1;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .topbar .topbarItem:nth-child(1) {
+        display: none;
+    }
+
+    .topbar :nth-child(1) {
+        margin-left: 1rem;
+    }
+
+    .dashboard {
+        margin: 1rem 1rem 0 1rem;
+        display: grid;
+        grid-gap: 1rem;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto auto auto auto auto auto auto;
+    }
+
+    .dashboardBalance {
+        grid-area: 1 / 1 / span 1 / span 1;
+    }
+
+    .dashboardTransfer {
+        grid-area: 2 / 1 / span 1 / span 1;
+    }
+
+    .rv-xy-plot {
+        display: none;
+    }
+
+    .transfers {
+        display: grid;
+        grid-auto-columns: auto;
+        grid-auto-rows: auto;
+        grid-template-columns: unset;
+        grid-template-rows: unset;
+    }
+
+    .dashboardConsume {
+        grid-area: 3 / 1 / span 1 / span 1;
+    }
+
+    .dashboardTransactionHistory {
+        grid-area: 4 / 1 / span 2 / span 1;
+    }
+
+    .dashboardTransactionAnalysis {
+        grid-area: 6 / 1 / span 1 / span 1;
+    }
+
+    .dashboardGlobalStatistics {
+        grid-area: 7 / 1 / span 1 / span 1;
+    }
+
+    .dashboardPolls {
+        grid-area: 8 / 1 / span 1 / span 1;
+    }
+
+    .poll {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .pollCurrent {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        border-top: 1px solid var(--level-2);
+        border-left: unset;
+        width: 100%;
+        margin-left: unset;
+        padding-left: unset;
+    }
+
+    .dashboardTransactionTable tr td:nth-child(4),
+    .dashboardTransactionTable tr td:nth-child(3)
+    {
+        display: none;
+    }
+
+    .dashboardUserState {
+        grid-area: 9 / 1 / span 1 / span 1;
+    }
 }
