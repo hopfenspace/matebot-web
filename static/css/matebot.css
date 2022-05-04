@@ -239,7 +239,7 @@ Login declaration
 }
 
 .transactionHistory {
-    height: 25rem;
+    height: 24rem;
     overflow-y: scroll;
 }
 
