@@ -116,8 +116,8 @@ github.com/modern-go/reflect2 v1.0.2 h1:xBagoLtFs94CBntxluKeaWgTMpvLxC4ur3nMaC9G
 github.com/modern-go/reflect2 v1.0.2/go.mod h1:yWuevngMOJpCy52FWWMvUC8ws7m/LJsjYzDa0/r8luk=
 github.com/monaco-io/request v1.0.15 h1:krhHE0yL6yL+xP0YwX5udyd+xnfQfHccop3Nsixec54=
 github.com/monaco-io/request v1.0.15/go.mod h1:voq81GC2YDynQM3W/4D6oqGhqb+u7zULvbLzFkTmDfo=
-github.com/myOmikron/echotools v0.0.0-20220501224102-9337a18a64c5 h1:BKDgth+S+8kZ3qiBAcOf2XlwSv7QxhfI9Ypl1SwX+WQ=
-github.com/myOmikron/echotools v0.0.0-20220501224102-9337a18a64c5/go.mod h1:1ookg7BmXc1kdqqhHelZjDr2dpn49JK+8igCn3NaMbA=
+github.com/myOmikron/echotools v0.1.1 h1:pkC3zHBSnAxzYQNKdKTEXdC2c3pir7o1vm2GDDSTELc=
+github.com/myOmikron/echotools v0.1.1/go.mod h1:4o+BijMVGVXbbF+XBKMet6DbhWNlAp6oYusxzv7Bzjc=
 github.com/myOmikron/masochism v0.0.0-20220331222721-8612043c2e05 h1:2fQ9SxR/+ReOCxBA50Bpnygfna+fdqhcK+8Vb46PMu8=
 github.com/myOmikron/masochism v0.0.0-20220331222721-8612043c2e05/go.mod h1:tVE+H3haDKrzvWlalGjN10ubJUpYMTTE9oXLJBxilx4=
 github.com/pelletier/go-toml v1.9.5 h1:4yBQzkHv+7BHq2PQUZF3Mx0IYxG7LsP222s7Agd3ve8=

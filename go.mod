@@ -7,7 +7,7 @@ require (
 	github.com/hellflame/argparse v1.8.0
 	github.com/labstack/echo/v4 v4.7.2
 	github.com/monaco-io/request v1.0.15
-	github.com/myOmikron/echotools v0.0.0-20220501224102-9337a18a64c5
+	github.com/myOmikron/echotools v0.1.1
 	github.com/pelletier/go-toml v1.9.5
 	gorm.io/driver/mysql v1.3.3
 	gorm.io/driver/postgres v1.3.5
