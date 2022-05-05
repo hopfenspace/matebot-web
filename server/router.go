@@ -28,14 +28,14 @@ func defineRoutes(e *echo.Echo, db *gorm.DB, config *conf.Config, client sdk.SDK
 
 	// Callbacks for MateBot Core
 	cb := handler.Callback{
-		Config: config,
 		DB:     db,
-		Client: client,
+		Config: config,
 		WP:     wp,
+		Client: client,
 	}
 	e.GET("/core/create/:model/:id", cb.Create)
 	e.GET("/core/update/:model/:id", cb.Update)
 	e.GET("/core/delete/:model/:id", cb.Delete)
 
-	e.Static("/static", filepath.Join(config.Generic.StaticDir))
+	e.Static("/static", filepath.Join(config.Server.StaticDir))
 }

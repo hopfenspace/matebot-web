@@ -27,7 +27,11 @@ Name = "pizza"
 Id = 4
 Name = "ice"
 
-[Generic]
+[Server]
 Listen = "127.0.0.1:8000"
+AllowedHosts = [
+    {Host = "127.0.0.1:8000", Https = false},
+]
+UseForwardedProtoHeader = false
 TemplateDir = "templates/"
 StaticDir = "static/"

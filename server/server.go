@@ -87,13 +87,7 @@ func StartServer(configPath string) {
 	e.HideBanner = true
 
 	// SDK client
-	client := sdk.New(config.MateBot.Url)
-	if err := client.Login(config.MateBot.User, config.MateBot.Password); err != nil {
-		fmt.Println("[SDK]: Error while logging in:", err.Error())
-	}
-	if err := client.SetApplicationID(config.MateBot.User); err != nil {
-		fmt.Println("[SDK]: Error while retrieving application ID:", err.Error())
-	}
+	client := sdk.New(config.MateBot.Url, config)
 
 	// Worker pool
 	wp := worker.NewPool(&worker.PoolConfig{
@@ -104,7 +98,7 @@ func StartServer(configPath string) {
 
 	// Template rendering
 	renderer := &TemplateRenderer{
-		templates: template.Must(template.ParseGlob(path.Join(config.Generic.TemplateDir, "*.gohtml"))),
+		templates: template.Must(template.ParseGlob(path.Join(config.Server.TemplateDir, "*.gohtml"))),
 	}
 	e.Renderer = renderer
 
@@ -117,19 +111,24 @@ func StartServer(configPath string) {
 		CookieName: "sessionid",
 		CookieAge:  &duration,
 	}))
-	_ = &middleware.SecurityConfig{
-		AllowedHosts: []middleware.AllowedHost{
-			{Host: "127.0.0.1:8000", Https: false},
-			{Host: "10.1.1.28:443", Https: true},
-		},
-		UseForwardedProtoHeader: true,
+
+	allowedHosts := make([]middleware.AllowedHost, 0)
+	for _, host := range config.Server.AllowedHosts {
+		allowedHosts = append(allowedHosts, middleware.AllowedHost{
+			Host:  host.Host,
+			Https: host.Https,
+		})
 	}
-	//e.Use(middleware.Security(secConfig))
+	secConfig := &middleware.SecurityConfig{
+		AllowedHosts:            allowedHosts,
+		UseForwardedProtoHeader: config.Server.UseForwardedProtoHeader,
+	}
+	e.Use(middleware.Security(secConfig))
 
 	// Router
 	defineRoutes(e, db, config, client, wp)
 
-	execution.SignalStart(e, config.Generic.Listen, &execution.Config{
+	execution.SignalStart(e, config.Server.Listen, &execution.Config{
 		ReloadFunc: func() {
 			StartServer(configPath)
 		},

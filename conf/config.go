@@ -9,27 +9,27 @@ type Database struct {
 	Password string
 }
 
-type Consumable struct {
-	ID   uint
-	Name string
-}
-
 type MateBot struct {
-	Url         string
-	User        string
-	Password    string
-	ID          uint
-	Consumables []Consumable
+	Url      string
+	User     string
+	Password string
 }
 
-type Generic struct {
-	Listen      string
-	TemplateDir string
-	StaticDir   string
+type AllowedHost struct {
+	Host  string
+	Https bool
+}
+
+type Server struct {
+	Listen                  string
+	TemplateDir             string
+	StaticDir               string
+	AllowedHosts            []AllowedHost
+	UseForwardedProtoHeader bool
 }
 
 type Config struct {
-	Generic  Generic
+	Server   Server
 	MateBot  MateBot
 	Database Database
 }
