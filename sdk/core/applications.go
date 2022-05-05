@@ -1,7 +1,7 @@
-package responses
+package core
 
 type Application struct {
-	Id      uint   `json:"id"`
+	ID      uint   `json:"id"`
 	Name    string `json:"name"`
 	Created uint   `json:"created"`
 }
