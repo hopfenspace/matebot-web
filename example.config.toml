@@ -10,7 +10,7 @@ Password = ""
 BaseUrl = ""
 Username = ""
 Password = ""
-CallbackUrl = ""
+CallbackURL = ""
 CallbackSecret = ""
 
 [MateBot.Currency]

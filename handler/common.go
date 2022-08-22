@@ -1,4 +1,4 @@
-package api
+package handler
 
 import (
 	"github.com/hopfenspace/MateBotSDKGo"
@@ -7,9 +7,14 @@ import (
 	"gorm.io/gorm"
 )
 
-type Api struct {
+type API struct {
 	DB         *gorm.DB
 	Config     *conf.Config
 	WorkerPool worker.Pool
 	SDK        *MateBotSDKGo.SDK
+}
+
+type GenericResponse struct {
+	Error   bool   `json:"error"`
+	Message string `json:"message"`
 }

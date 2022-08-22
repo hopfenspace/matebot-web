@@ -1,4 +1,4 @@
-package api
+package handler
 
 import (
 	"errors"
@@ -91,4 +91,9 @@ func (a *Api) Register(c echo.Context) error {
 	} else {
 		return c.String(201, "")
 	}
+}
+
+func (a *API) Connect(c echo.Context) error {
+	_ = c // TODO
+	return nil
 }

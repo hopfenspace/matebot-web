@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 	mysqlDriver "github.com/go-sql-driver/mysql"
+	sdk "github.com/hopfenspace/MateBotSDKGo"
 	"github.com/hopfenspace/matebot-web/conf"
-	"github.com/hopfenspace/matebot-web/sdk"
 	"github.com/labstack/echo/v4"
 	mw "github.com/labstack/echo/v4/middleware"
 	"github.com/myOmikron/echotools/color"
@@ -79,7 +79,8 @@ func StartServer(configPath string) {
 	db := database.Initialize(
 		driver,
 		&utilitymodels.Session{},
-		&utilitymodels.User{},
+		&utilitymodels.LocalUser{},
+		&BotUser{},
 	)
 
 	// Web server
@@ -87,7 +88,11 @@ func StartServer(configPath string) {
 	e.HideBanner = true
 
 	// SDK client
-	client := sdk.New(config.MateBot.Url, config)
+	client, err := sdk.New(&config.MateBot)
+	if err != nil {
+		fmt.Println(err.Error())
+		os.Exit(1)
+	}
 
 	// Worker pool
 	wp := worker.NewPool(&worker.PoolConfig{
@@ -108,9 +113,10 @@ func StartServer(configPath string) {
 
 	duration := time.Hour * 24
 	e.Use(middleware.Session(db, &middleware.SessionConfig{
-		CookieName: "sessionid",
+		CookieName: "session_id",
 		CookieAge:  &duration,
 	}))
+	middleware.RegisterAuthProvider(utilitymodels.GetLocalUser(db))
 
 	allowedHosts := make([]middleware.AllowedHost, 0)
 	for _, host := range config.Server.AllowedHosts {

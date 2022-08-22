@@ -1,41 +1,34 @@
 package server
 
 import (
+	"github.com/hopfenspace/MateBotSDKGo"
 	"github.com/hopfenspace/matebot-web/conf"
 	"github.com/hopfenspace/matebot-web/handler"
-	"github.com/hopfenspace/matebot-web/handler/api"
-	"github.com/hopfenspace/matebot-web/sdk"
 	"github.com/labstack/echo/v4"
 	"github.com/myOmikron/echotools/worker"
 	"gorm.io/gorm"
 	"path/filepath"
 )
 
-func defineRoutes(e *echo.Echo, db *gorm.DB, config *conf.Config, client sdk.SDK, wp worker.Pool) {
-	e.GET("/", handler.Index)
-
-	// API for frontend
-	frontend := api.Api{
+func defineRoutes(e *echo.Echo, db *gorm.DB, config *conf.Config, client *MateBotSDKGo.SDK, wp worker.Pool) {
+	api := handler.API{
 		DB:         db,
 		Config:     config,
 		WorkerPool: wp,
-		Client:     client,
+		SDK:        client,
 	}
-	e.POST("/api/frontend/login", frontend.Login)
-	e.GET("/api/frontend/logout", frontend.Logout)
-	e.POST("/api/frontend/register", frontend.Register)
-	e.POST("/api/frontend/test", frontend.Test)
 
-	// Callbacks for MateBot Core
-	cb := handler.Callback{
-		DB:     db,
-		Config: config,
-		WP:     wp,
-		Client: client,
-	}
-	e.GET("/core/create/:model/:id", cb.Create)
-	e.GET("/core/update/:model/:id", cb.Update)
-	e.GET("/core/delete/:model/:id", cb.Delete)
+	e.GET("/", handler.Index)
+
+	e.POST("/api/frontend/login", api.Login)
+	e.GET("/api/frontend/logout", api.Logout)
+	e.POST("/api/frontend/register", api.Register) // for new users
+	e.POST("/api/frontend/connect", api.Connect)   // for existing users
+	e.GET("/api/frontend/test", api.Test)
+
+	e.POST("/api/websocket", api.WebSocket)
+
+	e.POST("/api/callback", api.Callback)
 
 	e.Static("/static", filepath.Join(config.Server.StaticDir))
 }
