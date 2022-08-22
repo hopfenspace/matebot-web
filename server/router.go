@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 )
 
-func defineRoutes(e *echo.Echo, db *gorm.DB, config *conf.Config, client *MateBotSDKGo.SDK, wp worker.Pool) {
+func defineRoutes(e *echo.Echo, db *gorm.DB, config *conf.Config, client MateBotSDKGo.SDK, wp worker.Pool) {
 	api := handler.API{
 		DB:         db,
 		Config:     config,

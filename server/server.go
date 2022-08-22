@@ -6,6 +6,7 @@ import (
 	mysqlDriver "github.com/go-sql-driver/mysql"
 	sdk "github.com/hopfenspace/MateBotSDKGo"
 	"github.com/hopfenspace/matebot-web/conf"
+	"github.com/hopfenspace/matebot-web/models"
 	"github.com/labstack/echo/v4"
 	mw "github.com/labstack/echo/v4/middleware"
 	"github.com/myOmikron/echotools/color"
@@ -80,7 +81,7 @@ func StartServer(configPath string) {
 		driver,
 		&utilitymodels.Session{},
 		&utilitymodels.LocalUser{},
-		&BotUser{},
+		&models.CoreUser{},
 	)
 
 	// Web server

@@ -1,13 +1,13 @@
-package server
+package models
 
 import (
 	"github.com/myOmikron/echotools/utilitymodels"
 	"time"
 )
 
-type BotUser struct {
+type CoreUser struct {
 	ID        uint                    `gorm:"primarykey" json:"-"`
-	UserID    uint                    `json:"user_id"`
+	UserID    uint                    `gorm:"unique" json:"user_id"`
 	User      utilitymodels.LocalUser `json:"-"`
 	MateBotID uint                    `json:"bot_id"`
 	CreatedAt time.Time               `json:"-"`

@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/hellflame/argparse v1.9.0
-	github.com/hopfenspace/MateBotSDKGo v0.0.0-20220822202654-9042f6cc9c3e
+	github.com/hopfenspace/MateBotSDKGo v0.0.0-20220822233559-4022ce7b09ba
 	github.com/labstack/echo/v4 v4.8.0
 	github.com/myOmikron/echotools v0.7.2
 	github.com/pelletier/go-toml v1.9.5

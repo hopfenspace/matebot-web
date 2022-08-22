@@ -2,6 +2,7 @@ package handler
 
 import (
 	"errors"
+	"github.com/hopfenspace/matebot-web/models"
 	"github.com/labstack/echo/v4"
 	"github.com/myOmikron/echotools/auth"
 	"github.com/myOmikron/echotools/database"
@@ -20,7 +21,11 @@ func (a *API) Test(c echo.Context) error {
 	if context, err := middleware.GetSessionContext(c); err != nil {
 		return c.JSON(500, TestResponse{Authenticated: false, Error: true, Message: "Session error"})
 	} else {
-		return c.JSON(200, TestResponse{Authenticated: context.IsAuthenticated(), Error: false, Message: "Successfully authenticated"})
+		if context.IsAuthenticated() {
+			return c.JSON(200, TestResponse{Authenticated: true, Error: false, Message: "Successfully authenticated"})
+		} else {
+			return c.JSON(200, TestResponse{Authenticated: false, Error: false, Message: "Not authenticated"})
+		}
 	}
 }
 
@@ -83,11 +88,25 @@ func (a *API) Register(c echo.Context) error {
 		return c.JSON(409, GenericResponse{Error: true, Message: "User with that username already exists"})
 	}
 
-	if _, err := database.CreateLocalUser(a.DB, *r.Username, *r.Password, nil); err != nil {
-		return c.JSON(500, GenericResponse{Error: true, Message: err.Error()})
-	} else {
-		return c.JSON(201, GenericResponse{Error: false, Message: "Successfully registered new account"})
+	coreUser, err := a.SDK.NewUserWithAlias(*r.Username)
+	if err != nil {
+		return c.JSON(400, GenericResponse{Error: true, Message: err.Error()})
 	}
+
+	localUser, err := database.CreateLocalUser(a.DB, *r.Username, *r.Password, nil)
+	if err != nil {
+		return c.JSON(500, GenericResponse{Error: true, Message: err.Error()})
+	}
+
+	u := models.CoreUser{
+		UserID:    localUser.ID,
+		MateBotID: coreUser.ID,
+	}
+	if err := a.DB.Create(&u).Error; err != nil {
+		return c.JSON(500, GenericResponse{Error: true, Message: err.Error()})
+	}
+
+	return c.JSON(201, GenericResponse{Error: false, Message: "Successfully registered new account"})
 }
 
 type ConnectRequest struct {
