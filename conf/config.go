@@ -1,16 +1,12 @@
 package conf
 
+import "github.com/hopfenspace/MateBotSDKGo"
+
 type Database struct {
 	Driver   string
 	Host     string
 	Port     uint16
 	Name     string
-	User     string
-	Password string
-}
-
-type MateBot struct {
-	Url      string
 	User     string
 	Password string
 }
@@ -30,7 +26,7 @@ type Server struct {
 
 type Config struct {
 	Server   Server
-	MateBot  MateBot
+	MateBot  MateBotSDKGo.Config
 	Database Database
 }
 

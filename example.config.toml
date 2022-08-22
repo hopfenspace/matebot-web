@@ -7,25 +7,16 @@ User = ""
 Password = ""
 
 [MateBot]
-Url = ""
-User = ""
+BaseUrl = ""
+Username = ""
 Password = ""
+CallbackUrl = ""
+CallbackSecret = ""
 
-[[MateBot.Consumables]]
-Id = 1
-Name = "drink"
-
-[[MateBot.Consumables]]
-Id = 2
-Name = "water"
-
-[[MateBot.Consumables]]
-Id = 3
-Name = "pizza"
-
-[[MateBot.Consumables]]
-Id = 4
-Name = "ice"
+[MateBot.Currency]
+Digits = 2
+Factor = 100
+Symbol = "€"
 
 [Server]
 Listen = "127.0.0.1:8000"
