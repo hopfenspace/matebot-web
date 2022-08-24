@@ -21,24 +21,24 @@ func (a *API) makeNotification(event MateBotSDKGo.Event) (*EventNotification, er
 func (a *API) Callback(c echo.Context) error {
 	auth := c.Request().Header.Get("Authorization")
 	if auth == "" {
-		return c.JSON(401, GenericResponse{Error: true, Message: "Missing 'Authorization' header"})
+		return c.JSON(401, GenericResponse{Message: "Missing 'Authorization' header"})
 	}
 	authSlice := strings.Split(auth, " ")
 	if len(authSlice) != 2 || authSlice[0] != "Bearer" {
-		return c.JSON(400, GenericResponse{Error: true, Message: "Badly formatted 'Authorization' header"})
+		return c.JSON(400, GenericResponse{Message: "Badly formatted 'Authorization' header"})
 	} else if a.Config.MateBot.CallbackSecret != nil && authSlice[1] != *a.Config.MateBot.CallbackSecret {
-		return c.JSON(401, GenericResponse{Error: true, Message: "Invalid secret"})
+		return c.JSON(401, GenericResponse{Message: "Invalid secret"})
 	}
 
 	body, err := ioutil.ReadAll(c.Request().Body)
 	if err != nil {
-		return c.JSON(400, GenericResponse{Error: true, Message: "Error while reading body"})
+		return c.JSON(400, GenericResponse{Message: "Error while reading body"})
 	}
 
 	var events MateBotSDKGo.EventsNotification
 	err = json.Unmarshal(body, &events)
 	if err != nil {
-		return c.JSON(400, GenericResponse{Error: true, Message: "Error while decoding json"})
+		return c.JSON(400, GenericResponse{Message: "Error while decoding json"})
 	}
 
 	notifications := make([]*EventNotification, len(events.Events))
@@ -60,5 +60,5 @@ func (a *API) Callback(c echo.Context) error {
 		}()
 	}
 
-	return c.JSON(200, GenericResponse{Error: false, Message: "OK"})
+	return c.JSON(200, GenericResponse{Message: "OK"})
 }

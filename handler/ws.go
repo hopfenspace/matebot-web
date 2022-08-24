@@ -15,7 +15,7 @@ func (a *API) WebSocket(c echo.Context) error {
 
 	context, err := middleware.GetSessionContext(c)
 	if err != nil {
-		_ = c.JSON(500, GenericResponse{Error: true, Message: "Invalid session context"})
+		_ = c.JSON(500, GenericResponse{Message: "Invalid session context"})
 		return err
 	}
 	sessionID := context.GetSessionID()
@@ -26,7 +26,7 @@ func (a *API) WebSocket(c echo.Context) error {
 
 	if _, exists := (*a.EventChannels)[key]; exists {
 		c.Logger().Infof("WebSocket for session ID %s already exists", *sessionID)
-		return c.JSON(400, GenericResponse{Error: true, Message: "WebSocket already set up"})
+		return c.JSON(400, GenericResponse{Message: "WebSocket already set up"})
 	}
 
 	incoming := make(chan *EventNotification)
@@ -47,5 +47,5 @@ func (a *API) WebSocket(c echo.Context) error {
 			}
 		}
 	}).ServeHTTP(c.Response(), c.Request())
-	return c.JSON(200, GenericResponse{Error: false, Message: "OK"})
+	return c.JSON(200, GenericResponse{Message: "OK"})
 }

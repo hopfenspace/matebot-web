@@ -31,18 +31,18 @@ func (a *API) Test(c echo.Context) error {
 
 func (a *API) Logout(c echo.Context) error {
 	if context, err := middleware.GetSessionContext(c); err != nil {
-		return c.JSON(500, GenericResponse{Error: true, Message: "Invalid session"})
+		return c.JSON(500, GenericResponse{Message: "Invalid session"})
 	} else {
 		if context.IsAuthenticated() {
 			if err := middleware.Logout(a.DB, c); err != nil {
 				if errors.Is(err, echo.ErrCookieNotFound) {
-					return c.JSON(200, GenericResponse{Error: false, Message: "Successfully logged out"})
+					return c.JSON(200, GenericResponse{Message: "Successfully logged out"})
 				} else {
-					return c.JSON(500, GenericResponse{Error: true, Message: "Database Error"})
+					return c.JSON(500, GenericResponse{Message: "Database Error"})
 				}
 			}
 		}
-		return c.JSON(200, GenericResponse{Error: false, Message: "Successfully logged out"})
+		return c.JSON(200, GenericResponse{Message: "Successfully logged out"})
 	}
 }
 
@@ -54,17 +54,17 @@ type LoginRequest struct {
 func (a *API) Login(c echo.Context) error {
 	var r LoginRequest
 	if err := utility.ValidateJsonForm(c, &r); err != nil {
-		return c.JSON(400, GenericResponse{Error: true, Message: err.Error()})
+		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
 
 	if user, err := auth.AuthenticateLocalUser(a.DB, *r.Username, *r.Password); err != nil {
-		return c.JSON(401, GenericResponse{Error: true, Message: "Invalid username or password"})
+		return c.JSON(401, GenericResponse{Message: "Invalid username or password"})
 	} else {
 		if err := middleware.Login(a.DB, user, c, true); err != nil {
-			return c.JSON(500, GenericResponse{Error: true, Message: err.Error()})
+			return c.JSON(500, GenericResponse{Message: err.Error()})
 		}
 	}
-	return c.JSON(200, GenericResponse{Error: false, Message: "Successfully logged in"})
+	return c.JSON(200, GenericResponse{Message: "Successfully logged in"})
 }
 
 type RegisterRequest struct {
@@ -75,27 +75,27 @@ type RegisterRequest struct {
 func (a *API) Register(c echo.Context) error {
 	var r RegisterRequest
 	if err := utility.ValidateJsonForm(c, &r); err != nil {
-		return c.JSON(400, GenericResponse{Error: true, Message: err.Error()})
+		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
 
 	var userCount int64
 	if err := a.DB.Find(&utilitymodels.LocalUser{}, "username = ?", *r.Username).Count(&userCount).Error; err != nil {
 		c.Logger().Error(err)
-		return c.JSON(500, GenericResponse{Error: true, Message: "Database error"})
+		return c.JSON(500, GenericResponse{Message: "Database error"})
 	}
 
 	if userCount != 0 {
-		return c.JSON(409, GenericResponse{Error: true, Message: "User with that username already exists"})
+		return c.JSON(409, GenericResponse{Message: "User with that username already exists"})
 	}
 
 	coreUser, err := a.SDK.NewUserWithAlias(*r.Username)
 	if err != nil {
-		return c.JSON(400, GenericResponse{Error: true, Message: err.Error()})
+		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
 
 	localUser, err := database.CreateLocalUser(a.DB, *r.Username, *r.Password, nil)
 	if err != nil {
-		return c.JSON(500, GenericResponse{Error: true, Message: err.Error()})
+		return c.JSON(500, GenericResponse{Message: err.Error()})
 	}
 
 	u := models.CoreUser{
@@ -103,10 +103,10 @@ func (a *API) Register(c echo.Context) error {
 		MateBotID: coreUser.ID,
 	}
 	if err := a.DB.Create(&u).Error; err != nil {
-		return c.JSON(500, GenericResponse{Error: true, Message: err.Error()})
+		return c.JSON(500, GenericResponse{Message: err.Error()})
 	}
 
-	return c.JSON(201, GenericResponse{Error: false, Message: "Successfully registered new account"})
+	return c.JSON(201, GenericResponse{Message: "Successfully registered new account"})
 }
 
 type ConnectRequest struct {
