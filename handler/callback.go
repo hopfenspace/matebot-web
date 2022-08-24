@@ -8,13 +8,16 @@ import (
 	"strings"
 )
 
-func (a *API) makeNotification(event MateBotSDKGo.Event) (*EventNotification, error) {
+func (a *API) makeNotification(event MateBotSDKGo.Event) (*eventWrapper, error) {
 	// TODO
-	return &EventNotification{
-		MinPrivilege: MateBotSDKGo.External,
-		AllReceivers: true,
-		Receivers:    nil,
-		Data:         event,
+	return &eventWrapper{
+		allUsers:     true,
+		users:        nil,
+		minPrivilege: MateBotSDKGo.External,
+		notification: eventNotification{
+			Type: event.Event,
+			Data: event.Data,
+		},
 	}, nil
 }
 
@@ -41,7 +44,7 @@ func (a *API) Callback(c echo.Context) error {
 		return c.JSON(400, GenericResponse{Message: "Error while decoding json"})
 	}
 
-	notifications := make([]*EventNotification, len(events.Events))
+	notifications := make([]*eventWrapper, len(events.Events))
 	for i, event := range events.Events {
 		notification, err := a.makeNotification(event)
 		if err != nil {
@@ -51,11 +54,25 @@ func (a *API) Callback(c echo.Context) error {
 		}
 	}
 
-	for _, notificationChannel := range *a.EventChannels {
+	for identification, notificationChannel := range *a.EventChannels {
+		identification := identification
 		notificationChannel := notificationChannel
 		go func() {
 			for _, notification := range notifications {
-				notificationChannel <- notification
+				if notification.minPrivilege > identification.privilege {
+					continue
+				} else if !notification.allUsers && notification.users != nil {
+					found := false
+					for _, userID := range *notification.users {
+						if userID == identification.coreID {
+							found = true
+						}
+					}
+					if !found {
+						return
+					}
+				}
+				notificationChannel <- &notification.notification
 			}
 		}()
 	}

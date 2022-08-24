@@ -12,16 +12,20 @@ import (
 	"gorm.io/gorm"
 )
 
-type EventNotification struct {
-	MinPrivilege MateBotSDKGo.PrivilegeLevel
-	AllReceivers bool
-	Receivers    *[]uint
-	Data         any
+type eventNotification struct {
+	Type MateBotSDKGo.EventType
+	Data any
+}
+
+type eventWrapper struct {
+	allUsers     bool
+	users        *[]uint
+	minPrivilege MateBotSDKGo.PrivilegeLevel
+	notification eventNotification
 }
 
 type eventChannelKey struct {
 	sessionID string
-	userID    uint
 	coreID    uint
 	privilege MateBotSDKGo.PrivilegeLevel
 }
@@ -31,11 +35,11 @@ type API struct {
 	Config        *conf.Config
 	WorkerPool    worker.Pool
 	SDK           MateBotSDKGo.SDK
-	EventChannels *map[*eventChannelKey]chan *EventNotification
+	EventChannels *map[*eventChannelKey]chan *eventNotification
 }
 
 func NewAPI(db *gorm.DB, config *conf.Config, client *MateBotSDKGo.SDK, wp worker.Pool) API {
-	m := make(map[*eventChannelKey]chan *EventNotification)
+	m := make(map[*eventChannelKey]chan *eventNotification)
 	return API{
 		DB:            db,
 		Config:        config,

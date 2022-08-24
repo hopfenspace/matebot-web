@@ -7,11 +7,10 @@ import (
 )
 
 func (a *API) WebSocket(c echo.Context) error {
-	coreUser, user, err := a.getUsers(c)
+	coreUser, _, err := a.getUsers(c)
 	if err != nil {
 		return err
 	}
-	_, _ = coreUser, user
 
 	context, err := middleware.GetSessionContext(c)
 	if err != nil {
@@ -22,6 +21,8 @@ func (a *API) WebSocket(c echo.Context) error {
 
 	key := &eventChannelKey{
 		sessionID: *sessionID,
+		privilege: coreUser.Privilege(),
+		coreID:    coreUser.ID,
 	}
 
 	if _, exists := (*a.EventChannels)[key]; exists {
@@ -29,7 +30,7 @@ func (a *API) WebSocket(c echo.Context) error {
 		return c.JSON(400, GenericResponse{Message: "WebSocket already set up"})
 	}
 
-	incoming := make(chan *EventNotification)
+	incoming := make(chan *eventNotification)
 	(*a.EventChannels)[key] = incoming
 
 	websocket.Handler(func(ws *websocket.Conn) {
@@ -37,15 +38,20 @@ func (a *API) WebSocket(c echo.Context) error {
 			err := ws.Close()
 			if err != nil {
 				c.Logger().Error(err)
+				close(incoming)
+				delete(*a.EventChannels, key)
 			}
 		}(ws)
 		for {
 			data := <-incoming
-			err := websocket.Message.Send(ws, data)
+			err = websocket.JSON.Send(ws, data)
 			if err != nil {
 				c.Logger().Error(err)
+				close(incoming)
+				delete(*a.EventChannels, key)
+				return
 			}
 		}
 	}).ServeHTTP(c.Response(), c.Request())
-	return c.JSON(200, GenericResponse{Message: "OK"})
+	return nil
 }
