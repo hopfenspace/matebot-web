@@ -1,6 +1,9 @@
 package conf
 
-import "github.com/hopfenspace/MateBotSDKGo"
+import (
+	"errors"
+	"github.com/hopfenspace/MateBotSDKGo"
+)
 
 type Database struct {
 	Driver   string
@@ -31,5 +34,8 @@ type Config struct {
 }
 
 func (c *Config) CheckConfig() error {
+	if c.MateBot.CallbackSecret == nil || *c.MateBot.CallbackSecret == "" {
+		return errors.New("callback secret for MateBot must be set")
+	}
 	return nil
 }
