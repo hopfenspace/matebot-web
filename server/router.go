@@ -26,7 +26,7 @@ func defineRoutes(e *echo.Echo, db *gorm.DB, config *conf.Config, client MateBot
 	e.POST("/api/frontend/connect", api.Connect)   // for existing users
 	e.GET("/api/frontend/test", api.Test)
 
-	e.POST("/api/websocket", api.WebSocket)
+	e.GET("/api/websocket", api.WebSocket)
 
 	e.POST("/api/callback", api.Callback)
 

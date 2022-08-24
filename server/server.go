@@ -140,10 +140,14 @@ func StartServer(configPath string) {
 			StartServer(configPath)
 		},
 		StopFunc: func() {
-
+			if err := client.Shutdown(); err != nil {
+				e.Logger.Error(err)
+			}
 		},
 		TerminateFunc: func() {
-
+			if err := client.Shutdown(); err != nil {
+				e.Logger.Error(err)
+			}
 		},
 	})
 }
