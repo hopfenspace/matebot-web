@@ -19,12 +19,30 @@ type EventNotification struct {
 	Data         any
 }
 
+type eventChannelKey struct {
+	sessionID string
+	userID    uint
+	coreID    uint
+	privilege MateBotSDKGo.PrivilegeLevel
+}
+
 type API struct {
 	DB            *gorm.DB
 	Config        *conf.Config
 	WorkerPool    worker.Pool
 	SDK           MateBotSDKGo.SDK
-	EventChannels *map[string]chan EventNotification
+	EventChannels *map[*eventChannelKey]chan *EventNotification
+}
+
+func NewAPI(db *gorm.DB, config *conf.Config, client *MateBotSDKGo.SDK, wp worker.Pool) API {
+	m := make(map[*eventChannelKey]chan *EventNotification)
+	return API{
+		DB:            db,
+		Config:        config,
+		WorkerPool:    wp,
+		SDK:           *client,
+		EventChannels: &m,
+	}
 }
 
 type GenericResponse struct {

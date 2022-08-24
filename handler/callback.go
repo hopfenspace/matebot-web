@@ -8,6 +8,16 @@ import (
 	"strings"
 )
 
+func (a *API) makeNotification(event MateBotSDKGo.Event) (*EventNotification, error) {
+	// TODO
+	return &EventNotification{
+		MinPrivilege: MateBotSDKGo.External,
+		AllReceivers: true,
+		Receivers:    nil,
+		Data:         event,
+	}, nil
+}
+
 func (a *API) Callback(c echo.Context) error {
 	auth := c.Request().Header.Get("Authorization")
 	if auth == "" {
@@ -31,5 +41,24 @@ func (a *API) Callback(c echo.Context) error {
 		return c.JSON(400, GenericResponse{Error: true, Message: "Error while decoding json"})
 	}
 
-	return nil
+	notifications := make([]*EventNotification, len(events.Events))
+	for i, event := range events.Events {
+		notification, err := a.makeNotification(event)
+		if err != nil {
+			c.Logger().Error(err)
+		} else {
+			notifications[i] = notification
+		}
+	}
+
+	for _, notificationChannel := range *a.EventChannels {
+		notificationChannel := notificationChannel
+		go func() {
+			for _, notification := range notifications {
+				notificationChannel <- notification
+			}
+		}()
+	}
+
+	return c.JSON(200, GenericResponse{Error: false, Message: "OK"})
 }

@@ -20,10 +20,17 @@ func (a *API) WebSocket(c echo.Context) error {
 	}
 	sessionID := context.GetSessionID()
 
-	if _, exists := (*a.EventChannels)[*sessionID]; exists {
+	key := &eventChannelKey{
+		sessionID: *sessionID,
+	}
+
+	if _, exists := (*a.EventChannels)[key]; exists {
 		c.Logger().Infof("WebSocket for session ID %s already exists", *sessionID)
 		return c.JSON(400, GenericResponse{Error: true, Message: "WebSocket already set up"})
 	}
+
+	incoming := make(chan *EventNotification)
+	(*a.EventChannels)[key] = incoming
 
 	websocket.Handler(func(ws *websocket.Conn) {
 		defer func(ws *websocket.Conn) {
@@ -33,7 +40,8 @@ func (a *API) WebSocket(c echo.Context) error {
 			}
 		}(ws)
 		for {
-			err := websocket.Message.Send(ws, "Hello, Client!")
+			data := <-incoming
+			err := websocket.Message.Send(ws, data)
 			if err != nil {
 				c.Logger().Error(err)
 			}
