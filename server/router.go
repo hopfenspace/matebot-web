@@ -12,10 +12,11 @@ import (
 
 func defineRoutes(e *echo.Echo, db *gorm.DB, config *conf.Config, client MateBotSDKGo.SDK, wp worker.Pool) {
 	api := handler.API{
-		DB:         db,
-		Config:     config,
-		WorkerPool: wp,
-		SDK:        client,
+		DB:            db,
+		Config:        config,
+		WorkerPool:    wp,
+		SDK:           client,
+		EventChannels: &map[string]chan handler.EventNotification{},
 	}
 
 	e.GET("/", handler.Index)

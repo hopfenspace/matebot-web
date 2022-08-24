@@ -12,11 +12,19 @@ import (
 	"gorm.io/gorm"
 )
 
+type EventNotification struct {
+	MinPrivilege MateBotSDKGo.PrivilegeLevel
+	AllReceivers bool
+	Receivers    *[]uint
+	Data         any
+}
+
 type API struct {
-	DB         *gorm.DB
-	Config     *conf.Config
-	WorkerPool worker.Pool
-	SDK        MateBotSDKGo.SDK
+	DB            *gorm.DB
+	Config        *conf.Config
+	WorkerPool    worker.Pool
+	SDK           MateBotSDKGo.SDK
+	EventChannels *map[string]chan EventNotification
 }
 
 type GenericResponse struct {
