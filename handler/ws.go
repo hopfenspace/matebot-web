@@ -7,7 +7,7 @@ import (
 )
 
 func (a *API) WebSocket(c echo.Context) error {
-	coreUser, _, err := a.getUsers(c)
+	coreUser, user, err := a.getUsers(c)
 	if err != nil {
 		return err
 	}
@@ -32,13 +32,13 @@ func (a *API) WebSocket(c echo.Context) error {
 
 	incoming := make(chan *eventNotification)
 	(*a.EventChannels)[key] = incoming
+	c.Logger().Infof("Registering new WebSocket for user ID %d ...", user.ID)
 
 	websocket.Handler(func(ws *websocket.Conn) {
 		defer func(ws *websocket.Conn) {
 			err := ws.Close()
 			if err != nil {
 				c.Logger().Error(err)
-				close(incoming)
 				delete(*a.EventChannels, key)
 			}
 		}(ws)
@@ -47,7 +47,6 @@ func (a *API) WebSocket(c echo.Context) error {
 			err = websocket.JSON.Send(ws, data)
 			if err != nil {
 				c.Logger().Error(err)
-				close(incoming)
 				delete(*a.EventChannels, key)
 				return
 			}
