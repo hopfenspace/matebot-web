@@ -9,6 +9,7 @@ import (
 	"github.com/hopfenspace/matebot-web/models"
 	"github.com/labstack/echo/v4"
 	mw "github.com/labstack/echo/v4/middleware"
+	"github.com/labstack/gommon/log"
 	"github.com/myOmikron/echotools/color"
 	"github.com/myOmikron/echotools/database"
 	"github.com/myOmikron/echotools/execution"
@@ -87,6 +88,7 @@ func StartServer(configPath string) {
 	// Web server
 	e := echo.New()
 	e.HideBanner = true
+	e.Logger.SetLevel(log.INFO)
 
 	// SDK client
 	client, err := sdk.New(&config.MateBot)
