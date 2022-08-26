@@ -13,19 +13,18 @@ import (
 )
 
 type TestResponse struct {
-	Error         bool   `json:"error"`
 	Message       string `json:"message"`
 	Authenticated bool   `json:"authenticated" json:"authenticated,omitempty"`
 }
 
 func (a *API) Test(c echo.Context) error {
 	if context, err := middleware.GetSessionContext(c); err != nil {
-		return c.JSON(500, TestResponse{Authenticated: false, Error: true, Message: "Session error"})
+		return c.JSON(500, TestResponse{Authenticated: false, Message: "Session error"})
 	} else {
 		if context.IsAuthenticated() {
-			return c.JSON(200, TestResponse{Authenticated: true, Error: false, Message: "Successfully authenticated"})
+			return c.JSON(200, TestResponse{Authenticated: true, Message: "Successfully authenticated"})
 		} else {
-			return c.JSON(200, TestResponse{Authenticated: false, Error: false, Message: "Not authenticated"})
+			return c.JSON(200, TestResponse{Authenticated: false, Message: "Not authenticated"})
 		}
 	}
 }
