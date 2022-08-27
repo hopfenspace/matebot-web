@@ -9,7 +9,7 @@ type CoreUser struct {
 	ID        uint                    `gorm:"primarykey" json:"-"`
 	UserID    uint                    `gorm:"unique" json:"user_id"`
 	User      utilitymodels.LocalUser `json:"-"`
-	MateBotID uint                    `json:"bot_id"`
+	MateBotID uint                    `gorm:"unique" json:"core_id"`
 	CreatedAt time.Time               `json:"-"`
 	UpdatedAt time.Time               `json:"-"`
 }

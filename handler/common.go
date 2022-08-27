@@ -89,3 +89,12 @@ func (a *API) getUsers(c echo.Context) (*MateBotSDKGo.User, *utilitymodels.Local
 	}
 	return coreUser, user, nil
 }
+
+func (a *API) findLocalUserID(coreUserID uint) *uint {
+	var user models.CoreUser
+	if err := a.DB.Find(&user, "bot_id = ?", coreUserID).Error; err != nil {
+		return nil
+	}
+	u := user.UserID
+	return &u
+}
