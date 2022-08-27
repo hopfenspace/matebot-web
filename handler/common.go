@@ -71,7 +71,7 @@ func (a *API) getUser(c echo.Context) (uint, *utilitymodels.LocalUser, error) {
 				_ = c.JSON(500, GenericResponse{Message: "Registered user for session not found"})
 				return 0, nil, errors.New("session error")
 			}
-			return b.MateBotID, u.(*utilitymodels.LocalUser), nil
+			return b.CoreID, u.(*utilitymodels.LocalUser), nil
 		default:
 			panic("invalid local user type")
 		}
@@ -92,7 +92,7 @@ func (a *API) getUsers(c echo.Context) (*MateBotSDKGo.User, *utilitymodels.Local
 
 func (a *API) findLocalUserID(coreUserID uint) *uint {
 	var user models.CoreUser
-	if err := a.DB.Find(&user, "bot_id = ?", coreUserID).Error; err != nil {
+	if err := a.DB.Find(&user, "core_id = ?", coreUserID).Error; err != nil {
 		return nil
 	}
 	u := user.UserID

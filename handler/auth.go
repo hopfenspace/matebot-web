@@ -98,8 +98,8 @@ func (a *API) Register(c echo.Context) error {
 	}
 
 	u := models.CoreUser{
-		UserID:    localUser.ID,
-		MateBotID: coreUser.ID,
+		UserID: localUser.ID,
+		CoreID: coreUser.ID,
 	}
 	if err := a.DB.Create(&u).Error; err != nil {
 		return c.JSON(500, GenericResponse{Message: err.Error()})
@@ -152,8 +152,8 @@ func (a *API) Connect(c echo.Context) error {
 	}
 
 	u := models.CoreUser{
-		UserID:    localUser.ID,
-		MateBotID: user.ID,
+		UserID: localUser.ID,
+		CoreID: user.ID,
 	}
 	if err := a.DB.Create(&u).Error; err != nil {
 		return c.JSON(500, GenericResponse{Message: err.Error()})
