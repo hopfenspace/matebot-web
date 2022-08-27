@@ -12,20 +12,45 @@ type simpleUser struct {
 }
 
 type user struct {
-	UserID     uint                 `json:"user_id"`
-	CoreID     uint                 `json:"core_id"`
-	Balance    int                  `json:"balance"`
-	Permission bool                 `json:"permission"`
-	Active     bool                 `json:"active"`
-	External   bool                 `json:"external"`
-	VoucherId  interface{}          `json:"voucher_id"`
-	Aliases    []MateBotSDKGo.Alias `json:"aliases"`
-	Created    int                  `json:"created"`
-	Modified   int                  `json:"modified"`
+	UserID           uint                 `json:"user_id"`
+	CoreID           uint                 `json:"core_id"`
+	Balance          int                  `json:"balance"`
+	BalanceFormatted string               `json:"balance_formatted"`
+	Permission       bool                 `json:"permission"`
+	Active           bool                 `json:"active"`
+	External         bool                 `json:"external"`
+	VoucherId        interface{}          `json:"voucher_id"`
+	Aliases          []MateBotSDKGo.Alias `json:"aliases"`
+	Created          uint                 `json:"created"`
+	Modified         uint                 `json:"modified"`
 }
 
-func (a *API) State(c echo.Context) error {
-	return c.JSON(501, GenericResponse{"Not implemented yet."})
+type stateResponse struct {
+	User    user   `json:"user"`
+	Message string `json:"message"`
+}
+
+func (a *API) Me(c echo.Context) error {
+	coreUser, localUser, err := a.getUsers(c)
+	if err != nil {
+		return err
+	}
+	return c.JSON(200, stateResponse{
+		Message: "OK",
+		User: user{
+			UserID:           localUser.ID,
+			CoreID:           coreUser.ID,
+			Balance:          coreUser.Balance,
+			BalanceFormatted: a.SDK.FormatBalance(coreUser.Balance),
+			Permission:       coreUser.Permission,
+			Active:           coreUser.Active,
+			External:         coreUser.External,
+			VoucherId:        coreUser.VoucherID,
+			Aliases:          coreUser.Aliases,
+			Created:          coreUser.Created,
+			Modified:         coreUser.Modified,
+		},
+	})
 }
 
 func (a *API) ChangeUsername(c echo.Context) error {
