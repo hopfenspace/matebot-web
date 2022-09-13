@@ -107,3 +107,17 @@ func (a *API) findLocalUserID(coreUserID uint) *uint {
 	u := user.UserID
 	return &u
 }
+
+type vote struct {
+	UserID   uint   `json:"user_id"`
+	Username string `json:"username"`
+	Vote     bool   `json:"vote"`
+}
+
+func (a *API) convVote(v MateBotSDKGo.Vote) *vote {
+	return &vote{
+		UserID:   v.UserID,
+		Username: v.Username,
+		Vote:     v.Vote,
+	}
+}
