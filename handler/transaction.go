@@ -21,22 +21,27 @@ type transaction struct {
 	Timestamp uint       `json:"timestamp"`
 }
 
+type multiTransaction struct {
+	BaseAmount   uint          `json:"base_amount"`
+	TotalAmount  uint          `json:"total_amount"`
+	Transactions []transaction `json:"transactions"`
+	Timestamp    uint          `json:"timestamp"`
+}
+
 func (a *API) convTransaction(t *MateBotSDKGo.Transaction) *transaction {
 	senderUserID := a.findLocalUserID(t.Sender.ID)
 	receiverUserID := a.findLocalUserID(t.Receiver.ID)
-	senderName, _ := a.SDK.FormatUsername(&t.Sender, nil)
-	receiverName, _ := a.SDK.FormatUsername(&t.Receiver, nil)
 	return &transaction{
 		Id: t.ID,
 		Sender: simpleUser{
 			UserID:   senderUserID,
 			CoreID:   t.Sender.ID,
-			Username: senderName,
+			Username: t.Sender.Name,
 		},
 		Receiver: simpleUser{
 			UserID:   receiverUserID,
 			CoreID:   t.Receiver.ID,
-			Username: receiverName,
+			Username: t.Receiver.Name,
 		},
 		Amount:    t.Amount,
 		Reason:    t.Reason,

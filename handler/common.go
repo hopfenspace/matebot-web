@@ -53,6 +53,10 @@ type GenericResponse struct {
 	Message string `json:"message"`
 }
 
+type simpleID struct {
+	ID *uint `json:"id" echotools:"required"`
+}
+
 func (a *API) getUser(c echo.Context) (uint, *utilitymodels.LocalUser, error) {
 	if context, err := middleware.GetSessionContext(c); err != nil {
 		_ = c.JSON(500, GenericResponse{Message: "Unexpected failure"})
