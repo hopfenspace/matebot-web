@@ -13,7 +13,7 @@ type communismResponse struct {
 
 type communismsResponse struct {
 	Message    string      `json:"message"`
-	Communisms []communism `json:"communism"`
+	Communisms []communism `json:"communisms"`
 }
 
 type communism struct {
@@ -28,11 +28,6 @@ type communism struct {
 	Modified         uint                                `json:"modified"`
 	Participants     []MateBotSDKGo.CommunismParticipant `json:"participants"`
 	MultiTransaction *multiTransaction                   `json:"multi_transaction"`
-}
-
-type newCommunismRequest struct {
-	Amount      *uint   `json:"amount" echotools:"required"`
-	Description *string `json:"description" echotools:"required;not empty"`
 }
 
 func (a *API) convCommunism(c *MateBotSDKGo.Communism) *communism {
@@ -65,7 +60,7 @@ func (a *API) convCommunism(c *MateBotSDKGo.Communism) *communism {
 }
 
 func (a *API) NewCommunism(c echo.Context) error {
-	var r newCommunismRequest
+	var r newMoneyRequest
 	if err := utility.ValidateJsonForm(c, &r); err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
@@ -161,7 +156,7 @@ func (a *API) AllCommunisms(c echo.Context) error {
 	if err != nil {
 		return nil
 	}
-	if coreUser.External {
+	if coreUser.Privilege() < MateBotSDKGo.Internal {
 		return c.JSON(400, GenericResponse{Message: "You are not permitted to request all communisms."})
 	}
 	co, err := a.SDK.GetCommunisms(nil)

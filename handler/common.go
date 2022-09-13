@@ -57,6 +57,11 @@ type simpleID struct {
 	ID *uint `json:"id" echotools:"required"`
 }
 
+type newMoneyRequest struct {
+	Amount      *uint   `json:"amount" echotools:"required"`
+	Description *string `json:"description" echotools:"required;not empty"`
+}
+
 func (a *API) getUser(c echo.Context) (uint, *utilitymodels.LocalUser, error) {
 	if context, err := middleware.GetSessionContext(c); err != nil {
 		_ = c.JSON(500, GenericResponse{Message: "Unexpected failure"})
