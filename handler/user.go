@@ -2,6 +2,7 @@ package handler
 
 import (
 	"github.com/hopfenspace/MateBotSDKGo"
+	"github.com/hopfenspace/matebot-web/models"
 	"github.com/labstack/echo/v4"
 )
 
@@ -28,6 +29,11 @@ type user struct {
 type stateResponse struct {
 	User    user   `json:"user"`
 	Message string `json:"message"`
+}
+
+type listResponse struct {
+	Message string       `json:"message"`
+	Users   []simpleUser `json:"users"`
 }
 
 func (a *API) Me(c echo.Context) error {
@@ -75,4 +81,30 @@ func (a *API) ConfirmAlias(c echo.Context) error {
 
 func (a *API) DeleteAlias(c echo.Context) error {
 	return c.JSON(501, GenericResponse{"Not implemented yet."})
+}
+
+func (a *API) ListUsers(c echo.Context) error {
+	u, err := a.SDK.GetUsers(map[string]string{"active": "true", "community": "false"})
+	if err != nil {
+		return c.JSON(400, GenericResponse{Message: err.Error()})
+	}
+	users := make([]simpleUser, len(u))
+	for i := range u {
+		var b models.CoreUser
+		a.DB.Find(&b, "core_id = ?", u[i].ID)
+		if b.ID == 0 {
+			users[i] = simpleUser{
+				UserID:   nil,
+				CoreID:   u[i].ID,
+				Username: u[i].Name,
+			}
+		} else {
+			users[i] = simpleUser{
+				UserID:   &b.UserID,
+				CoreID:   u[i].ID,
+				Username: u[i].Name,
+			}
+		}
+	}
+	return c.JSON(200, listResponse{Message: "OK", Users: users})
 }
