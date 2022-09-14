@@ -126,7 +126,7 @@ func (a *API) OpenRefunds(c echo.Context) error {
 	if err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
-	var refunds []refund
+	refunds := make([]refund, len(r))
 	for i := range r {
 		refunds[i] = *a.convRefund(r[i])
 	}
@@ -139,13 +139,13 @@ func (a *API) AllRefunds(c echo.Context) error {
 		return nil
 	}
 	if coreUser.Privilege() < MateBotSDKGo.Internal {
-		return c.JSON(400, GenericResponse{Message: "You are not permitted to request all communisms."})
+		return c.JSON(400, GenericResponse{Message: "You are not permitted to request all refunds."})
 	}
 	r, err := a.SDK.GetRefunds(nil)
 	if err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
-	var refunds []refund
+	refunds := make([]refund, len(r))
 	for i := range r {
 		refunds[i] = *a.convRefund(r[i])
 	}

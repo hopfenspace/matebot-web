@@ -29,13 +29,13 @@ func defineRoutes(e *echo.Echo, db *gorm.DB, config *conf.Config, client MateBot
 	e.POST("/api/frontend/balance", api.Balance)
 
 	e.GET("/api/frontend/me", api.Me)
+	e.GET("/api/frontend/listUsers", api.ListUsers)
 	e.POST("/api/frontend/changeUsername", api.ChangeUsername)
 	e.POST("/api/frontend/startVouching", api.StartVouching)
 	e.POST("/api/frontend/stopVouching", api.StopVouching)
 	e.POST("/api/frontend/dropPrivileges", api.DropPrivileges)
 	e.POST("/api/frontend/confirmAlias", api.ConfirmAlias)
 	e.POST("/api/frontend/deleteAlias", api.DeleteAlias)
-	e.POST("/api/frontend/listUsers", api.ListUsers)
 
 	e.POST("/api/frontend/sendTransaction", api.SendTransaction)
 	e.POST("/api/frontend/consumeTransaction", api.ConsumeTransaction)
