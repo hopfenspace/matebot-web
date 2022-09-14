@@ -15,6 +15,7 @@ type simpleUser struct {
 type user struct {
 	UserID           uint                 `json:"user_id"`
 	CoreID           uint                 `json:"core_id"`
+	Username         string               `json:"username"`
 	Balance          int                  `json:"balance"`
 	BalanceFormatted string               `json:"balance_formatted"`
 	Permission       bool                 `json:"permission"`
@@ -46,6 +47,7 @@ func (a *API) Me(c echo.Context) error {
 		User: user{
 			UserID:           localUser.ID,
 			CoreID:           coreUser.ID,
+			Username:         coreUser.Name,
 			Balance:          coreUser.Balance,
 			BalanceFormatted: a.SDK.FormatBalance(coreUser.Balance),
 			Permission:       coreUser.Permission,
@@ -84,6 +86,13 @@ func (a *API) DeleteAlias(c echo.Context) error {
 }
 
 func (a *API) ListUsers(c echo.Context) error {
+	coreUser, _, err := a.getUsers(c)
+	if err != nil {
+		return nil
+	}
+	if coreUser.Privilege() < MateBotSDKGo.Vouched {
+		return c.JSON(400, GenericResponse{Message: "You are not permitted to request all users."})
+	}
 	u, err := a.SDK.GetUsers(map[string]string{"active": "true", "community": "false"})
 	if err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
