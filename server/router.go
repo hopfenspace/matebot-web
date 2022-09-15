@@ -17,8 +17,8 @@ func defineRoutes(e *echo.Echo, db *gorm.DB, config *conf.Config, client MateBot
 
 	e.POST("/api/frontend/login", api.Login)
 	e.GET("/api/frontend/logout", api.Logout)
-	e.POST("/api/frontend/register", api.Register) // for new users
-	e.POST("/api/frontend/connect", api.Connect)   // for existing users
+	e.POST("/api/frontend/register", api.Register)      // for new users
+	e.POST("/api/frontend/connectAccount", api.Connect) // for existing users
 	e.GET("/api/frontend/test", api.Test)
 	e.POST("/api/frontend/test", api.Test)
 
@@ -30,12 +30,14 @@ func defineRoutes(e *echo.Echo, db *gorm.DB, config *conf.Config, client MateBot
 
 	e.GET("/api/frontend/me", api.Me)
 	e.GET("/api/frontend/listUsers", api.ListUsers)
-	e.POST("/api/frontend/changeUsername", api.ChangeUsername)
+	e.POST("/api/frontend/changeUsername", api.ChangeUsername) // only changes global username, not local username
 	e.POST("/api/frontend/startVouching", api.StartVouching)
 	e.POST("/api/frontend/stopVouching", api.StopVouching)
 	e.POST("/api/frontend/dropPrivileges", api.DropPrivileges)
 	e.POST("/api/frontend/confirmAlias", api.ConfirmAlias)
 	e.POST("/api/frontend/deleteAlias", api.DeleteAlias)
+	e.POST("/api/frontend/deleteLocalAccount", api.DeleteLocalAccount)
+	e.POST("/api/frontend/deleteFullAccount", api.DeleteFullAccount)
 
 	e.POST("/api/frontend/sendTransaction", api.SendTransaction)
 	e.POST("/api/frontend/consumeTransaction", api.ConsumeTransaction)

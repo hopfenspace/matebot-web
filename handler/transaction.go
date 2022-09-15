@@ -29,6 +29,9 @@ type multiTransaction struct {
 }
 
 func (a *API) convTransaction(t *MateBotSDKGo.Transaction) *transaction {
+	if t == nil {
+		return nil
+	}
 	senderUserID := a.findLocalUserID(t.Sender.ID)
 	receiverUserID := a.findLocalUserID(t.Receiver.ID)
 	return &transaction{

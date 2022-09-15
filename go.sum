@@ -24,6 +24,8 @@ github.com/hellflame/argparse v1.9.0 h1:YlUTX1b2rNWYEur0eqhipgHKrGEChTpVpgyfKyFf
 github.com/hellflame/argparse v1.9.0/go.mod h1:nOtOQAtkWh6u5msq6huJxZtjb+Yg9VeN0e7vRuBS49E=
 github.com/hopfenspace/MateBotSDKGo v0.0.0-20220914203144-618b5aa4d6a9 h1:A4GiQQoeZo23GI3zAxYHFmIPKTjd7cAj+c5kR4ehsFA=
 github.com/hopfenspace/MateBotSDKGo v0.0.0-20220914203144-618b5aa4d6a9/go.mod h1:QC4mBmh7SLqPZmOuAjyB6mpiFIprtuD7CaX87dWEHC4=
+github.com/hopfenspace/MateBotSDKGo v0.0.0-20220914212256-0484731601d5 h1:8d6TXU0BU5oPomOF7h2eP7T+Jolqax0APToJcgFg1cM=
+github.com/hopfenspace/MateBotSDKGo v0.0.0-20220914212256-0484731601d5/go.mod h1:QC4mBmh7SLqPZmOuAjyB6mpiFIprtuD7CaX87dWEHC4=
 github.com/jackc/chunkreader v1.0.0/go.mod h1:RT6O25fNZIuasFJRyZ4R/Y2BbhasbmZXF9QQ7T3kePo=
 github.com/jackc/chunkreader/v2 v2.0.0/go.mod h1:odVSm741yZoC3dpHEUXIqA9tQRhFrgOHwnPIn9lDKlk=
 github.com/jackc/chunkreader/v2 v2.0.1 h1:i+RDz65UE+mmpjTfyz0MoVTnzeYxroil2G82ki7MGG8=
