@@ -6,3 +6,5 @@ package.json
 config.toml
 bin/
 node_modules/
+*.sqlite
+Vagrantfile
