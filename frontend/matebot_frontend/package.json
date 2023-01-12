@@ -9,6 +9,8 @@
 
   },
   "dependencies": {
+    "react-toastify": "^9.1.1",
+    "reactjs-popup": "^2.0.5",
     "@babel/core": "^7.16.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.3",
     "@svgr/webpack": "^6.5.1",
