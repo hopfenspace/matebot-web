@@ -2,7 +2,6 @@
 .vagrant/
 matebot-web
 package-lock.json
-package.json
 config.toml
 bin/
 node_modules/
