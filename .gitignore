@@ -6,4 +6,6 @@ config.toml
 bin/
 node_modules/
 *.sqlite
+Vagrantfileyarn.lock
 Vagrantfile
+go.sum
