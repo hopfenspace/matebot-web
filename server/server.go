@@ -21,13 +21,11 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"html/template"
 	"io/fs"
 	"io/ioutil"
 	"net"
 	"net/url"
 	"os"
-	"path"
 	"strconv"
 	"time"
 )
@@ -103,12 +101,6 @@ func StartServer(configPath string) {
 		QueueSize: 100,
 	})
 	wp.Start()
-
-	// Template rendering
-	renderer := &TemplateRenderer{
-		templates: template.Must(template.ParseGlob(path.Join(config.Server.TemplateDir, "*.gohtml"))),
-	}
-	e.Renderer = renderer
 
 	// Middleware
 	e.Use(mw.Logger())

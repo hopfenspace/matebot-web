@@ -7,13 +7,10 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/myOmikron/echotools/worker"
 	"gorm.io/gorm"
-	"path/filepath"
 )
 
 func defineRoutes(e *echo.Echo, db *gorm.DB, config *conf.Config, client MateBotSDKGo.SDK, wp worker.Pool) {
 	api := handler.NewAPI(db, config, &client, wp)
-
-	e.GET("/", handler.Index)
 
 	e.POST("/api/frontend/login", api.Login)
 	e.GET("/api/frontend/logout", api.Logout)
@@ -67,6 +64,4 @@ func defineRoutes(e *echo.Echo, db *gorm.DB, config *conf.Config, client MateBot
 	e.GET("/api/websocket", api.WebSocket)
 
 	e.POST("/api/callback", api.Callback)
-
-	e.Static("/static", filepath.Join(config.Server.StaticDir))
 }
