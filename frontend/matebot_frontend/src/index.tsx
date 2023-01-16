@@ -1,23 +1,28 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { ToastContainer } from "react-toastify";
 
 import "./index.css";
 import "react-toastify/dist/ReactToastify.css";
+
 import Home from "./views/home";
+import Login from "./views/login";
+import Register from "./views/register";
+import { ToastContainer } from "react-toastify";
 
 type RootProps = {};
 
 type RootState = {
     path: Array<String>;
+    loggedIn: "logged out" | "logged in";
 };
 
-class Root extends React.Component<RootProps, RootState> {
+export default class Root extends React.Component<RootProps, RootState> {
     constructor(props: RootProps) {
         super(props);
 
         this.state = {
             path: [],
+            loggedIn: "logged out",
         };
     }
 
@@ -61,6 +66,10 @@ class Root extends React.Component<RootProps, RootState> {
                 case "":
                 case undefined:
                     return <Home />;
+                case "login":
+                    return <Login />;
+                case "register":
+                    return <Register />;
                 default:
                     break;
             }
@@ -76,8 +85,8 @@ class Root extends React.Component<RootProps, RootState> {
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 root.render(
-    <React.StrictMode>
+    <>
         <Root />
         <ToastContainer theme="dark" autoClose={2500} />
-    </React.StrictMode>
+    </>
 );
