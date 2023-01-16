@@ -14,6 +14,8 @@ type RootProps = {};
 type RootState = {
     path: Array<String>;
     loggedIn: "logged out" | "logged in";
+
+    state_set: boolean;
 };
 
 export default class Root extends React.Component<RootProps, RootState> {
@@ -23,6 +25,7 @@ export default class Root extends React.Component<RootProps, RootState> {
         this.state = {
             path: [],
             loggedIn: "logged out",
+            state_set: false,
         };
     }
 
@@ -51,7 +54,7 @@ export default class Root extends React.Component<RootProps, RootState> {
                 path.shift();
             }
 
-            this.setState({ path });
+            this.setState({ path, state_set: true });
         };
 
         setPath();
@@ -59,7 +62,12 @@ export default class Root extends React.Component<RootProps, RootState> {
     }
 
     render() {
-        const { path } = this.state;
+        const { path, state_set } = this.state;
+
+        // If we haven't set our state, don't render yet
+        if (!state_set) {
+            return <></>;
+        }
 
         let content = (() => {
             switch (path[0]) {
@@ -87,6 +95,6 @@ const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement)
 root.render(
     <>
         <Root />
-        <ToastContainer theme="dark" autoClose={2500} />
+        <ToastContainer theme="dark" autoClose={3500} pauseOnHover={true} hideProgressBar={true} draggable={true} />
     </>
 );

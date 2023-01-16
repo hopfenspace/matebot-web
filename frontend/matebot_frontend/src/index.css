@@ -212,8 +212,8 @@ Dashboard
 }
 
 .balance-chart {
-  width: 40em;
-  height: 20em;
+  width: 30em;
+  height: 12em;
 }
 
 .icon-button {
@@ -234,6 +234,75 @@ Dashboard
 
 .icon-button img {
   width: 4em;
+}
+
+.consumables-list {
+  display: grid;
+  grid-gap: 1em;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.consumables-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  transition: all ease-in-out 200ms;
+  cursor: pointer;
+  border-radius: 1em;
+  padding: 1em;
+  background-color: var(--level-1);
+  border: none;
+  color: var(--text);
+}
+
+.consumables-item > p {
+  margin-bottom: 0;
+}
+
+.consumables-item:hover {
+  background-color: var(--level-2);
+
+}
+
+.consumables-item img {
+  width: 4em;
+}
+
+.global-statistics-table {
+  width: 100%;
+}
+
+.transfer-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 1em;
+}
+
+.transfer-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  transition: all ease-in-out 200ms;
+  cursor: pointer;
+  border-radius: 1em;
+  padding: 1em;
+  background-color: var(--level-1);
+  border: none;
+  color: var(--text);
+}
+
+.transfer-item:hover {
+  background-color: var(--level-2);
+}
+
+.transfer-item img {
+  width: 4em;
+}
+
+.transfer-item p {
+  margin-bottom: 0;
 }
 
 @media screen and (max-width: 1800px) {
@@ -384,7 +453,7 @@ Dashboard
 
   .balance-chart {
     width: 25em;
-    height: 20em;
+    height: 12em;
   }
 
   .dashboard-balance {
@@ -445,7 +514,7 @@ Dashboard
 
   .balance-chart {
     width: 25em;
-    height: 15em;
+    height: 12em;
   }
 
   .dashboard-balance {
