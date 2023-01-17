@@ -66,7 +66,7 @@ func (a *API) NewRefund(c echo.Context) error {
 	if err := utility.ValidateJsonForm(c, &r); err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
-	coreUserID, _, err := a.getUser(c)
+	coreUserID, _, err := a.getUnverifiedCoreID(c)
 	if err != nil {
 		return nil
 	}
@@ -82,7 +82,7 @@ func (a *API) voteOnRefund(c echo.Context, approve bool) error {
 	if err := utility.ValidateJsonForm(c, &r); err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
-	coreUserID, _, err := a.getUser(c)
+	coreUserID, _, err := a.getUnverifiedCoreID(c)
 	if err != nil {
 		return nil
 	}
@@ -110,7 +110,7 @@ func (a *API) AbortRefund(c echo.Context) error {
 	if err := utility.ValidateJsonForm(c, &r); err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
-	coreUserID, _, err := a.getUser(c)
+	coreUserID, _, err := a.getUnverifiedCoreID(c)
 	if err != nil {
 		return nil
 	}
@@ -134,7 +134,7 @@ func (a *API) OpenRefunds(c echo.Context) error {
 }
 
 func (a *API) AllRefunds(c echo.Context) error {
-	coreUser, _, err := a.getUsers(c)
+	coreUser, _, err := a.getUnverifiedCoreUser(c)
 	if err != nil {
 		return nil
 	}

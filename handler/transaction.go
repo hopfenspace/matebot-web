@@ -63,7 +63,7 @@ func (a *API) SendTransaction(c echo.Context) error {
 	if err := utility.ValidateJsonForm(c, &r); err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
-	coreID, _, err := a.getUser(c)
+	coreID, _, err := a.getUnverifiedCoreID(c)
 	if err != nil {
 		return err
 	}
@@ -96,7 +96,8 @@ func (a *API) ConsumeTransaction(c echo.Context) error {
 	if err := utility.ValidateJsonForm(c, &r); err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
-	coreID, _, err := a.getUser(c)
+	_, _, _ := a.getCoreUser(c)
+	coreID, _, err := a.getUnverifiedCoreID(c)
 	if err != nil {
 		return err
 	}

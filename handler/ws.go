@@ -7,7 +7,7 @@ import (
 )
 
 func (a *API) WebSocket(c echo.Context) error {
-	coreUser, user, err := a.getUsers(c)
+	coreUser, _, err := a.getUnverifiedCoreUser(c)
 	if err != nil {
 		return err
 	}

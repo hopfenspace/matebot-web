@@ -46,7 +46,7 @@ func (a *API) Balance(c echo.Context) error {
 	if err := utility.ValidateJsonForm(c, &r); err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
-	coreUser, _, err := a.getUsers(c)
+	coreUser, _, err := a.getUnverifiedCoreUser(c)
 	if err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
@@ -67,7 +67,7 @@ func (a *API) Balance(c echo.Context) error {
 }
 
 func (a *API) Blame(c echo.Context) error {
-	coreUser, _, err := a.getUsers(c)
+	coreUser, _, err := a.getUnverifiedCoreUser(c)
 	if err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
@@ -79,7 +79,7 @@ func (a *API) Blame(c echo.Context) error {
 }
 
 func (a *API) Zwegat(c echo.Context) error {
-	coreUser, _, err := a.getUsers(c)
+	coreUser, _, err := a.getUnverifiedCoreUser(c)
 	if err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}

@@ -88,11 +88,11 @@ func (a *API) convUser(c echo.Context, coreUser *MateBotSDKGo.User, localUser *u
 }
 
 func (a *API) Me(c echo.Context) error {
-	coreUser, localUser, err := a.getUsers(c)
+	coreUserID, localUser, err := a.getUnverifiedCoreID(c)
 	if err != nil {
 		return err
 	}
-	return c.JSON(200, stateResponse{Message: "OK", User: *a.convUser(c, coreUser, localUser)})
+	return c.JSON(200, stateResponse{Message: "OK", User: *a.convUser(c, unverifiedCoreUser, localUser)})
 }
 
 type nameRequest struct {
@@ -104,7 +104,7 @@ func (a *API) ChangeUsername(c echo.Context) error {
 	if err := utility.ValidateJsonForm(c, &r); err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
-	coreID, localUser, err := a.getUser(c)
+	coreID, localUser, err := a.getVerifiedCoreUser(c, nil)
 	if err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
@@ -126,6 +126,7 @@ type voucherResponse struct {
 	Transaction *transaction `json:"transaction"`
 }
 
+// Only call this function with validated user IDs!
 func (a *API) handleVouching(c echo.Context, voucher *uint, issuer uint) error {
 	var r voucherRequest
 	if err := utility.ValidateJsonForm(c, &r); err != nil {
@@ -173,23 +174,23 @@ func (a *API) handleVouching(c echo.Context, voucher *uint, issuer uint) error {
 }
 
 func (a *API) StartVouching(c echo.Context) error {
-	coreUserID, _, err := a.getUser(c)
+	coreUser, _, err := a.getVerifiedCoreUser(c, nil)
 	if err != nil {
 		return nil
 	}
-	return a.handleVouching(c, &coreUserID, coreUserID)
+	return a.handleVouching(c, &coreUser.ID, coreUser.ID)
 }
 
 func (a *API) StopVouching(c echo.Context) error {
-	coreUserID, _, err := a.getUser(c)
+	coreUser, _, err := a.getVerifiedCoreUser(c, nil)
 	if err != nil {
 		return nil
 	}
-	return a.handleVouching(c, nil, coreUserID)
+	return a.handleVouching(c, nil, coreUser.ID)
 }
 
 func (a *API) DropPrivileges(c echo.Context) error {
-	return c.JSON(501, GenericResponse{"Not implemented yet."})
+	return c.JSON(501, GenericResponse{"Not implemented yet."}) // TODO: Implement this
 }
 
 func (a *API) ConfirmAlias(c echo.Context) error {
@@ -197,11 +198,11 @@ func (a *API) ConfirmAlias(c echo.Context) error {
 	if err := utility.ValidateJsonForm(c, &r); err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
-	coreID, _, err := a.getUser(c)
+	coreUser, _, err := a.getVerifiedCoreUser(c, nil)
 	if err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
-	alias, err := a.SDK.ConfirmAlias(*r.ID, coreID)
+	alias, err := a.SDK.ConfirmAlias(*r.ID, coreUser.ID)
 	if err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
@@ -219,7 +220,7 @@ func (a *API) DeleteAlias(c echo.Context) error {
 	if err := utility.ValidateJsonForm(c, &r); err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
-	coreID, _, err := a.getUser(c)
+	coreUser, _, err := a.getVerifiedCoreUser(c, nil)
 	if err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
@@ -230,7 +231,7 @@ func (a *API) DeleteAlias(c echo.Context) error {
 	if aliases[0].ApplicationID == a.SDK.GetThisApplicationID() {
 		return c.JSON(400, GenericResponse{Message: "It's not possible to delete the currently used alias. Do you want to delete your account instead?"})
 	}
-	deletion, err := a.SDK.DeleteAlias(*r.ID, coreID)
+	deletion, err := a.SDK.DeleteAlias(*r.ID, coreUser.ID)
 	if err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
@@ -238,22 +239,20 @@ func (a *API) DeleteAlias(c echo.Context) error {
 }
 
 func (a *API) DeleteLocalAccount(c echo.Context) error {
-	return c.JSON(501, GenericResponse{"Not implemented yet."})
+	return c.JSON(501, GenericResponse{"Not implemented yet."}) // TODO: Implement this
 }
 
 func (a *API) DeleteFullAccount(c echo.Context) error {
-	return c.JSON(501, GenericResponse{"Not implemented yet."})
+	return c.JSON(501, GenericResponse{"Not implemented yet."}) // TODO: Implement this
 }
 
 func (a *API) ListUsers(c echo.Context) error {
-	coreUser, _, err := a.getUsers(c)
+	l := MateBotSDKGo.Vouched
+	_, _, err := a.getVerifiedCoreUser(c, &l)
 	if err != nil {
-		return nil
+		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
-	if coreUser.Privilege() < MateBotSDKGo.Vouched {
-		return c.JSON(400, GenericResponse{Message: "You are not permitted to request all users."})
-	}
-	u, err := a.SDK.GetUsers(map[string]string{"active": "true", "community": "false"})
+	u, err := a.SDK.GetUsers(map[string]string{"active": "true", "community": "false", "alias_confirmed": "true"})
 	if err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}

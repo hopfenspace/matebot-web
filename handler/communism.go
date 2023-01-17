@@ -64,7 +64,7 @@ func (a *API) NewCommunism(c echo.Context) error {
 	if err := utility.ValidateJsonForm(c, &r); err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
-	coreUserID, _, err := a.getUser(c)
+	coreUserID, _, err := a.getUnverifiedCoreID(c)
 	if err != nil {
 		return nil
 	}
@@ -80,7 +80,7 @@ func (a *API) CloseCommunism(c echo.Context) error {
 	if err := utility.ValidateJsonForm(c, &r); err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
-	coreUserID, _, err := a.getUser(c)
+	coreUserID, _, err := a.getUnverifiedCoreID(c)
 	if err != nil {
 		return nil
 	}
@@ -96,7 +96,7 @@ func (a *API) JoinCommunism(c echo.Context) error {
 	if err := utility.ValidateJsonForm(c, &r); err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
-	coreUserID, _, err := a.getUser(c)
+	coreUserID, _, err := a.getVerifiedCoreUser(c, nil)
 	if err != nil {
 		return nil
 	}
@@ -112,7 +112,7 @@ func (a *API) LeaveCommunism(c echo.Context) error {
 	if err := utility.ValidateJsonForm(c, &r); err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
-	coreUserID, _, err := a.getUser(c)
+	coreUserID, _, err := a.getUnverifiedCoreID(c)
 	if err != nil {
 		return nil
 	}
@@ -128,7 +128,8 @@ func (a *API) AbortCommunism(c echo.Context) error {
 	if err := utility.ValidateJsonForm(c, &r); err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
-	coreUserID, _, err := a.getUser(c)
+	l := MateBotSDKGo.Vouched
+	coreUserID, _, err := a.getVerifiedCoreUser(c, nil)
 	if err != nil {
 		return nil
 	}
@@ -152,7 +153,7 @@ func (a *API) OpenCommunisms(c echo.Context) error {
 }
 
 func (a *API) AllCommunisms(c echo.Context) error {
-	coreUser, _, err := a.getUsers(c)
+	coreUser, _, err := a.getVerifiedCoreUser(c, nil)
 	if err != nil {
 		return nil
 	}

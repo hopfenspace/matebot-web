@@ -62,7 +62,9 @@ type newMoneyRequest struct {
 	Description *string `json:"description" echotools:"required;not empty"`
 }
 
-func (a *API) getUser(c echo.Context) (uint, *utilitymodels.LocalUser, error) {
+// Get the core user ID and the app's local user reference of the local authenticated user
+// but without any validity checks (e.g., whether the user even exists at the core server)
+func (a *API) getUnverifiedCoreID(c echo.Context) (uint, *utilitymodels.LocalUser, error) {
 	if context, err := middleware.GetSessionContext(c); err != nil {
 		_ = c.JSON(500, GenericResponse{Message: "Unexpected failure"})
 		return 0, nil, err
@@ -87,18 +89,21 @@ func (a *API) getUser(c echo.Context) (uint, *utilitymodels.LocalUser, error) {
 	}
 }
 
-func (a *API) getUsers(c echo.Context) (*MateBotSDKGo.User, *utilitymodels.LocalUser, error) {
-	coreUserID, user, err := a.getUser(c)
+// Get the active user's core user instance, if existent. Performs check on validity
+// (e.g. whether the user is active, has a confirmed app alias, or minimal privilege level).
+func (a *API) getVerifiedCoreUser(c echo.Context, minimalLevel *MateBotSDKGo.PrivilegeLevel) (*MateBotSDKGo.User, *utilitymodels.LocalUser, error) {
+	coreUserID, localUser, err := a.getUnverifiedCoreID(c)
+	if err != nil {
+		return nil, nil, nil
+	}
+	coreUser, err := a.SDK.GetVerifiedUser(coreUserID, minimalLevel)
 	if err != nil {
 		return nil, nil, err
 	}
-	coreUser, err := a.SDK.GetUser(coreUserID, nil)
-	if err != nil {
-		return nil, nil, err
-	}
-	return coreUser, user, nil
+	return coreUser, localUser, nil
 }
 
+// Return the local user ID for a given core user ID or nil if not found
 func (a *API) findLocalUserID(coreUserID uint) *uint {
 	var user models.CoreUser
 	if err := a.DB.Find(&user, "core_id = ?", coreUserID).Error; err != nil {

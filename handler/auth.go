@@ -131,7 +131,7 @@ func (a *API) Connect(c echo.Context) error {
 		return c.JSON(409, GenericResponse{Message: "User with that username already exists"})
 	}
 
-	users, err := a.SDK.GetUsers(map[string]string{"active": "true", "alias_username": *r.ExistingUsername, "alias_application": *r.Application})
+	users, err := a.SDK.GetUsers(map[string]string{"active": "true", "alias_confirmed": "true", "alias_username": *r.ExistingUsername, "alias_application": *r.Application})
 	if err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	} else if len(users) == 0 {
