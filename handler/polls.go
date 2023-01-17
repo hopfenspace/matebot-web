@@ -74,7 +74,7 @@ func (a *API) NewPoll(c echo.Context) error {
 	if err := utility.ValidateJsonForm(c, &r); err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
-	coreUserID, _, err := a.getUnverifiedCoreID(c)
+	coreUser, _, err := a.getVerifiedCoreUser(c, nil)
 	if err != nil {
 		return nil
 	}
@@ -84,19 +84,19 @@ func (a *API) NewPoll(c echo.Context) error {
 		MateBotSDKGo.GetPermission:   MateBotSDKGo.GetPermission,
 		MateBotSDKGo.LoosePermission: MateBotSDKGo.LoosePermission,
 	}[*r.Variant]
-	fmt.Println("r", r, *r.User, *r.Variant, found)
 	if !found {
 		return c.JSON(400, GenericResponse{Message: fmt.Sprintf("Invalid poll variant '%s'", *r.Variant)})
 	}
+	c.Logger().Infof("Requesting new poll (variant '%s' = %s)", *r.Variant, variant)
 	switch (*r.User).(type) {
 	case string:
-		poll, err := a.SDK.NewPoll((*r.User).(string), coreUserID, string(variant))
+		poll, err := a.SDK.NewPoll((*r.User).(string), coreUser.ID, string(variant))
 		if err != nil {
 			return c.JSON(400, GenericResponse{Message: err.Error()})
 		}
 		return c.JSON(200, pollResponse{Message: "OK", Poll: a.convPoll(poll)})
 	case float64:
-		poll, err := a.SDK.NewPoll(int((*r.User).(float64)), coreUserID, string(variant))
+		poll, err := a.SDK.NewPoll(int((*r.User).(float64)), coreUser.ID, string(variant))
 		if err != nil {
 			return c.JSON(400, GenericResponse{Message: err.Error()})
 		}
@@ -111,7 +111,7 @@ func (a *API) voteOnPoll(c echo.Context, approve bool) error {
 	if err := utility.ValidateJsonForm(c, &r); err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
-	coreUserID, _, err := a.getUnverifiedCoreID(c)
+	coreUser, _, err := a.getVerifiedCoreUser(c, nil)
 	if err != nil {
 		return nil
 	}
@@ -119,7 +119,7 @@ func (a *API) voteOnPoll(c echo.Context, approve bool) error {
 	if err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
-	response, err := a.SDK.VoteOnPollBallot(polls[0].BallotID, coreUserID, approve)
+	response, err := a.SDK.VoteOnPollBallot(polls[0].BallotID, coreUser.ID, approve)
 	if err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
@@ -139,11 +139,11 @@ func (a *API) AbortPoll(c echo.Context) error {
 	if err := utility.ValidateJsonForm(c, &r); err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
-	coreUserID, _, err := a.getUnverifiedCoreID(c)
+	coreUser, _, err := a.getVerifiedCoreUser(c, nil)
 	if err != nil {
 		return nil
 	}
-	poll, err := a.SDK.AbortPoll(*r.ID, coreUserID)
+	poll, err := a.SDK.AbortPoll(*r.ID, coreUser.ID)
 	if err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
@@ -151,6 +151,11 @@ func (a *API) AbortPoll(c echo.Context) error {
 }
 
 func (a *API) OpenPolls(c echo.Context) error {
+	l := MateBotSDKGo.Vouched
+	_, _, err := a.getVerifiedCoreUser(c, &l)
+	if err != nil {
+		return nil
+	}
 	p, err := a.SDK.GetPolls(map[string]string{"active": "true"})
 	if err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
@@ -163,12 +168,10 @@ func (a *API) OpenPolls(c echo.Context) error {
 }
 
 func (a *API) AllPolls(c echo.Context) error {
-	coreUser, _, err := a.getUnverifiedCoreUser(c)
+	l := MateBotSDKGo.Internal
+	_, _, err := a.getVerifiedCoreUser(c, &l)
 	if err != nil {
 		return nil
-	}
-	if coreUser.Privilege() < MateBotSDKGo.Internal {
-		return c.JSON(400, GenericResponse{Message: "You are not permitted to request all polls."})
 	}
 	p, err := a.SDK.GetPolls(nil)
 	if err != nil {

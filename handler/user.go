@@ -92,6 +92,10 @@ func (a *API) Me(c echo.Context) error {
 	if err != nil {
 		return err
 	}
+	unverifiedCoreUser, err := a.SDK.GetUser(coreUserID, nil)
+	if err != nil {
+		return c.JSON(400, GenericResponse{Message: err.Error()})
+	}
 	return c.JSON(200, stateResponse{Message: "OK", User: *a.convUser(c, unverifiedCoreUser, localUser)})
 }
 

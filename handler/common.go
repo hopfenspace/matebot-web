@@ -91,13 +91,15 @@ func (a *API) getUnverifiedCoreID(c echo.Context) (uint, *utilitymodels.LocalUse
 
 // Get the active user's core user instance, if existent. Performs check on validity
 // (e.g. whether the user is active, has a confirmed app alias, or minimal privilege level).
+// If the function returns an error, the HTTP response has already been prepared.
 func (a *API) getVerifiedCoreUser(c echo.Context, minimalLevel *MateBotSDKGo.PrivilegeLevel) (*MateBotSDKGo.User, *utilitymodels.LocalUser, error) {
 	coreUserID, localUser, err := a.getUnverifiedCoreID(c)
 	if err != nil {
-		return nil, nil, nil
+		return nil, nil, err
 	}
 	coreUser, err := a.SDK.GetVerifiedUser(coreUserID, minimalLevel)
 	if err != nil {
+		_ = c.JSON(400, GenericResponse{Message: err.Error()})
 		return nil, nil, err
 	}
 	return coreUser, localUser, nil

@@ -66,11 +66,11 @@ func (a *API) NewRefund(c echo.Context) error {
 	if err := utility.ValidateJsonForm(c, &r); err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
-	coreUserID, _, err := a.getUnverifiedCoreID(c)
+	coreUser, _, err := a.getVerifiedCoreUser(c, nil)
 	if err != nil {
 		return nil
 	}
-	refund, err := a.SDK.NewRefund(coreUserID, *r.Amount, *r.Description)
+	refund, err := a.SDK.NewRefund(coreUser.ID, *r.Amount, *r.Description)
 	if err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
@@ -82,7 +82,7 @@ func (a *API) voteOnRefund(c echo.Context, approve bool) error {
 	if err := utility.ValidateJsonForm(c, &r); err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
-	coreUserID, _, err := a.getUnverifiedCoreID(c)
+	coreUser, _, err := a.getVerifiedCoreUser(c, nil)
 	if err != nil {
 		return nil
 	}
@@ -90,7 +90,7 @@ func (a *API) voteOnRefund(c echo.Context, approve bool) error {
 	if err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
-	response, err := a.SDK.VoteOnRefundBallot(refunds[0].BallotID, coreUserID, approve)
+	response, err := a.SDK.VoteOnRefundBallot(refunds[0].BallotID, coreUser.ID, approve)
 	if err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
@@ -110,11 +110,11 @@ func (a *API) AbortRefund(c echo.Context) error {
 	if err := utility.ValidateJsonForm(c, &r); err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
-	coreUserID, _, err := a.getUnverifiedCoreID(c)
+	coreUser, _, err := a.getVerifiedCoreUser(c, nil)
 	if err != nil {
 		return nil
 	}
-	refund, err := a.SDK.AbortRefund(*r.ID, coreUserID)
+	refund, err := a.SDK.AbortRefund(*r.ID, coreUser.ID)
 	if err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
@@ -122,6 +122,11 @@ func (a *API) AbortRefund(c echo.Context) error {
 }
 
 func (a *API) OpenRefunds(c echo.Context) error {
+	l := MateBotSDKGo.Vouched
+	_, _, err := a.getVerifiedCoreUser(c, &l)
+	if err != nil {
+		return nil
+	}
 	r, err := a.SDK.GetRefunds(map[string]string{"active": "true"})
 	if err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
@@ -134,12 +139,10 @@ func (a *API) OpenRefunds(c echo.Context) error {
 }
 
 func (a *API) AllRefunds(c echo.Context) error {
-	coreUser, _, err := a.getUnverifiedCoreUser(c)
+	l := MateBotSDKGo.Internal
+	_, _, err := a.getVerifiedCoreUser(c, &l)
 	if err != nil {
 		return nil
-	}
-	if coreUser.Privilege() < MateBotSDKGo.Internal {
-		return c.JSON(400, GenericResponse{Message: "You are not permitted to request all refunds."})
 	}
 	r, err := a.SDK.GetRefunds(nil)
 	if err != nil {

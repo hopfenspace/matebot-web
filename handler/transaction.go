@@ -63,20 +63,20 @@ func (a *API) SendTransaction(c echo.Context) error {
 	if err := utility.ValidateJsonForm(c, &r); err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
-	coreID, _, err := a.getUnverifiedCoreID(c)
+	coreUser, _, err := a.getVerifiedCoreUser(c, nil)
 	if err != nil {
 		return err
 	}
 
 	switch r.Receiver.(type) {
 	case float64:
-		transaction, err := a.SDK.SendTransaction(coreID, int(r.Receiver.(float64)), *r.Amount, *r.Reason)
+		transaction, err := a.SDK.SendTransaction(coreUser.ID, int(r.Receiver.(float64)), *r.Amount, *r.Reason)
 		if err != nil {
 			return c.JSON(400, GenericResponse{Message: err.Error()})
 		}
 		return c.JSON(200, transactionResponse{Message: "OK", Transaction: a.convTransaction(transaction)})
 	case string:
-		transaction, err := a.SDK.SendTransaction(coreID, r.Receiver.(string), *r.Amount, *r.Reason)
+		transaction, err := a.SDK.SendTransaction(coreUser.ID, r.Receiver.(string), *r.Amount, *r.Reason)
 		if err != nil {
 			return c.JSON(400, GenericResponse{Message: err.Error()})
 		}
@@ -96,12 +96,11 @@ func (a *API) ConsumeTransaction(c echo.Context) error {
 	if err := utility.ValidateJsonForm(c, &r); err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
-	_, _, _ := a.getCoreUser(c)
-	coreID, _, err := a.getUnverifiedCoreID(c)
+	coreUser, _, err := a.getVerifiedCoreUser(c, nil)
 	if err != nil {
 		return err
 	}
-	t, err := a.SDK.ConsumeTransaction(coreID, *r.Amount, *r.Consumable)
+	t, err := a.SDK.ConsumeTransaction(coreUser.ID, *r.Amount, *r.Consumable)
 	if err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}

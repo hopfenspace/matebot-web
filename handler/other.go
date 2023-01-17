@@ -1,10 +1,10 @@
 package handler
 
 import (
+	"fmt"
 	"github.com/hopfenspace/MateBotSDKGo"
 	"github.com/labstack/echo/v4"
 	"github.com/myOmikron/echotools/utility"
-	"strconv"
 )
 
 type consumablesResponse struct {
@@ -13,6 +13,9 @@ type consumablesResponse struct {
 }
 
 func (a *API) Consumables(c echo.Context) error {
+	if _, _, err := a.getUnverifiedCoreID(c); err != nil {
+		return err
+	}
 	consumables, err := a.SDK.GetConsumables(nil)
 	if err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
@@ -26,11 +29,31 @@ type applicationsResponse struct {
 }
 
 func (a *API) Applications(c echo.Context) error {
+	if _, _, err := a.getUnverifiedCoreID(c); err != nil {
+		return err
+	}
 	applications, err := a.SDK.GetApplications(nil)
 	if err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
 	return c.JSON(200, applicationsResponse{Message: "OK", Applications: applications})
+}
+
+type applicationListResponse struct {
+	Message      string   `json:"message"`
+	Applications []string `json:"applications"`
+}
+
+func (a *API) ApplicationList(c echo.Context) error {
+	applications, err := a.SDK.GetApplications(nil)
+	names := make([]string, len(applications))
+	for i := range applications {
+		names[i] = applications[i].Name
+	}
+	if err != nil {
+		return c.JSON(400, GenericResponse{Message: err.Error()})
+	}
+	return c.JSON(200, applicationListResponse{Message: "OK", Applications: names})
 }
 
 type balanceResponse struct {
@@ -46,46 +69,75 @@ func (a *API) Balance(c echo.Context) error {
 	if err := utility.ValidateJsonForm(c, &r); err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
-	coreUser, _, err := a.getUnverifiedCoreUser(c)
+	coreUser, _, err := a.getVerifiedCoreUser(c, nil)
 	if err != nil {
-		return c.JSON(400, GenericResponse{Message: err.Error()})
+		return nil
 	}
 	if *r.ID == coreUser.ID {
 		return c.JSON(200, balanceResponse{Message: "OK", UserID: r.ID, Username: &coreUser.Name, Balance: coreUser.Balance, BalanceFormatted: a.SDK.FormatBalance(coreUser.Balance)})
 	}
-	if coreUser.Privilege() < MateBotSDKGo.Internal {
+	if coreUser.Privilege() < MateBotSDKGo.Vouched {
 		return c.JSON(400, GenericResponse{Message: "You are not permitted to request another user's balance."})
 	}
-	users, err := a.SDK.GetUsers(map[string]string{"id": strconv.Itoa(int(*r.ID))})
+	user, err := a.SDK.GetUser(int(*r.ID), nil)
 	if err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
-	} else if len(users) != 1 {
-		c.Logger().Error(users, "required one element as 'users' response")
-		return c.JSON(400, GenericResponse{Message: "Invalid response"})
 	}
-	return c.JSON(200, balanceResponse{Message: "OK", UserID: &users[0].ID, Username: &users[0].Name, Balance: users[0].Balance, BalanceFormatted: a.SDK.FormatBalance(users[0].Balance)})
+	return c.JSON(200, balanceResponse{Message: "OK", UserID: &user.ID, Username: &user.Name, Balance: user.Balance, BalanceFormatted: a.SDK.FormatBalance(user.Balance)})
+}
+
+type blameResponse struct {
+	Message          string  `json:"message"`
+	NobodyAvailable  bool    `json:"nobody_available"`
+	UserID           *uint   `json:"user_id"`
+	Username         *string `json:"username"`
+	Balance          *int    `json:"balance"`
+	BalanceFormatted *string `json:"balance_formatted"`
 }
 
 func (a *API) Blame(c echo.Context) error {
-	coreUser, _, err := a.getUnverifiedCoreUser(c)
+	coreUser, _, err := a.getVerifiedCoreUser(c, nil)
 	if err != nil {
-		return c.JSON(400, GenericResponse{Message: err.Error()})
+		return nil
 	}
 	sponsor, err := a.SDK.FindSponsoringUser(coreUser)
 	if err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
+	} else if sponsor == nil {
+		return c.JSON(200, blameResponse{
+			Message:          "Good news, nobody has to be blamed",
+			NobodyAvailable:  true,
+			UserID:           nil,
+			Username:         nil,
+			Balance:          nil,
+			BalanceFormatted: nil,
+		})
 	}
-	return c.JSON(200, balanceResponse{Message: "OK", UserID: &sponsor.ID, Username: &sponsor.Name, Balance: sponsor.Balance, BalanceFormatted: a.SDK.FormatBalance(sponsor.Balance)})
+	bF := a.SDK.FormatBalance(sponsor.Balance)
+	return c.JSON(200, blameResponse{
+		Message:          "There is a user who shall reduce his debts",
+		NobodyAvailable:  false,
+		UserID:           &sponsor.ID,
+		Username:         &sponsor.Name,
+		Balance:          &sponsor.Balance,
+		BalanceFormatted: &bF,
+	})
 }
 
 func (a *API) Zwegat(c echo.Context) error {
-	coreUser, _, err := a.getUnverifiedCoreUser(c)
+	coreUser, _, err := a.getVerifiedCoreUser(c, nil)
 	if err != nil {
-		return c.JSON(400, GenericResponse{Message: err.Error()})
+		return nil
 	}
 	balance, err := a.SDK.GetCommunityBalance(coreUser)
 	if err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
-	return c.JSON(200, balanceResponse{Message: "OK", UserID: nil, Username: nil, Balance: balance, BalanceFormatted: a.SDK.FormatBalance(balance)})
+	var msg string
+	if balance >= 0 {
+		msg = fmt.Sprintf("Peter errechnet ein massives Vermögen von %s!", a.SDK.FormatBalance(balance))
+	} else {
+		msg = fmt.Sprintf("Peter errechnet Gesamtschulden von %s!", a.SDK.FormatBalance(-balance))
+	}
+	return c.JSON(200, balanceResponse{Message: msg, UserID: nil, Username: nil, Balance: balance, BalanceFormatted: a.SDK.FormatBalance(balance)})
 }
