@@ -7,9 +7,13 @@ import (
 )
 
 func (a *API) WebSocket(c echo.Context) error {
-	coreID, _, err := a.getUnverifiedCoreID(c)
+	unverifiedCoreID, _, err := a.getUnverifiedCoreID(c)
 	if err != nil {
 		return err
+	}
+	unverifiedCoreUser, err := a.SDK.GetUser(unverifiedCoreID, nil)
+	if err != nil {
+		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
 
 	context, err := middleware.GetSessionContext(c)
@@ -21,8 +25,9 @@ func (a *API) WebSocket(c echo.Context) error {
 
 	key := &eventChannelKey{
 		sessionID: *sessionID,
-		privilege: coreUser.Privilege(),
-		coreID:    coreUser.ID,
+		confirmed: a.SDK.IsUserConfirmed(unverifiedCoreUser),
+		privilege: unverifiedCoreUser.Privilege(),
+		coreID:    unverifiedCoreUser.ID,
 	}
 
 	if _, exists := (*a.EventChannels)[key]; exists {
@@ -32,7 +37,7 @@ func (a *API) WebSocket(c echo.Context) error {
 
 	incoming := make(chan *eventNotification)
 	(*a.EventChannels)[key] = incoming
-	c.Logger().Infof("Registering new WebSocket for user ID %d ...", user.ID)
+	c.Logger().Infof("Registering new WebSocket for user ID %d ...", unverifiedCoreUser.ID)
 
 	websocket.Handler(func(ws *websocket.Conn) {
 		defer func(ws *websocket.Conn) {

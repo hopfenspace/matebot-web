@@ -26,6 +26,7 @@ type eventWrapper struct {
 
 type eventChannelKey struct {
 	sessionID string
+	confirmed bool
 	coreID    uint
 	privilege MateBotSDKGo.PrivilegeLevel
 }
