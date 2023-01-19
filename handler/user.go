@@ -16,27 +16,25 @@ type simpleUser struct {
 }
 
 type debtorUser struct {
-	UserID           uint64 `json:"user_id"`
-	Username         string `json:"username"`
-	Balance          int64  `json:"balance"`
-	BalanceFormatted string `json:"balance_formatted"`
-	Active           bool   `json:"active"`
+	UserID   uint64 `json:"user_id"`
+	Username string `json:"username"`
+	Balance  int64  `json:"balance"`
+	Active   bool   `json:"active"`
 }
 
 type user struct {
-	UserID           uint64               `json:"user_id"`
-	CoreID           uint64               `json:"core_id"`
-	Username         string               `json:"username"`
-	Balance          int64                `json:"balance"`
-	BalanceFormatted string               `json:"balance_formatted"`
-	Permission       bool                 `json:"permission"`
-	Active           bool                 `json:"active"`
-	External         bool                 `json:"external"`
-	VoucherID        interface{}          `json:"voucher_id"`
-	Aliases          []MateBotSDKGo.Alias `json:"aliases"`
-	Debtors          []debtorUser         `json:"debtors"`
-	Created          uint64               `json:"created"`
-	Modified         uint64               `json:"modified"`
+	UserID     uint64               `json:"user_id"`
+	CoreID     uint64               `json:"core_id"`
+	Username   string               `json:"username"`
+	Balance    int64                `json:"balance"`
+	Permission bool                 `json:"permission"`
+	Active     bool                 `json:"active"`
+	External   bool                 `json:"external"`
+	VoucherID  interface{}          `json:"voucher_id"`
+	Aliases    []MateBotSDKGo.Alias `json:"aliases"`
+	Debtors    []debtorUser         `json:"debtors"`
+	Created    uint64               `json:"created"`
+	Modified   uint64               `json:"modified"`
 }
 
 type stateResponse struct {
@@ -64,28 +62,26 @@ func (a *API) convUser(c echo.Context, coreUser *MateBotSDKGo.User, localUser *u
 	} else {
 		for _, u := range users {
 			debtors = append(debtors, debtorUser{
-				UserID:           u.ID,
-				Username:         u.Name,
-				Balance:          u.Balance,
-				BalanceFormatted: a.SDK.FormatBalance(u.Balance),
-				Active:           u.Active,
+				UserID:   u.ID,
+				Username: u.Name,
+				Balance:  u.Balance,
+				Active:   u.Active,
 			})
 		}
 	}
 	return &user{
-		UserID:           uint64(localUser.ID),
-		CoreID:           coreUser.ID,
-		Username:         coreUser.Name,
-		Balance:          coreUser.Balance,
-		BalanceFormatted: a.SDK.FormatBalance(coreUser.Balance),
-		Permission:       coreUser.Permission,
-		Active:           coreUser.Active,
-		External:         coreUser.External,
-		VoucherID:        coreUser.VoucherID,
-		Aliases:          coreUser.Aliases,
-		Debtors:          debtors,
-		Created:          coreUser.Created,
-		Modified:         coreUser.Modified,
+		UserID:     uint64(localUser.ID),
+		CoreID:     coreUser.ID,
+		Username:   coreUser.Name,
+		Balance:    coreUser.Balance,
+		Permission: coreUser.Permission,
+		Active:     coreUser.Active,
+		External:   coreUser.External,
+		VoucherID:  coreUser.VoucherID,
+		Aliases:    coreUser.Aliases,
+		Debtors:    debtors,
+		Created:    coreUser.Created,
+		Modified:   coreUser.Modified,
 	}
 }
 
@@ -193,20 +189,18 @@ func (a *API) handleVouching(c echo.Context, voucher *uint64, issuer uint64) err
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
 	d := debtorUser{
-		UserID:           voucherUpdate.Debtor.ID,
-		Username:         voucherUpdate.Debtor.Name,
-		Balance:          voucherUpdate.Debtor.Balance,
-		BalanceFormatted: a.SDK.FormatBalance(voucherUpdate.Debtor.Balance),
-		Active:           voucherUpdate.Debtor.Active,
+		UserID:   voucherUpdate.Debtor.ID,
+		Username: voucherUpdate.Debtor.Name,
+		Balance:  voucherUpdate.Debtor.Balance,
+		Active:   voucherUpdate.Debtor.Active,
 	}
 	var v *debtorUser
 	if voucherUpdate.Voucher != nil {
 		v = &debtorUser{
-			UserID:           voucherUpdate.Voucher.ID,
-			Username:         voucherUpdate.Voucher.Name,
-			Balance:          voucherUpdate.Voucher.Balance,
-			BalanceFormatted: a.SDK.FormatBalance(voucherUpdate.Voucher.Balance),
-			Active:           voucherUpdate.Voucher.Active,
+			UserID:   voucherUpdate.Voucher.ID,
+			Username: voucherUpdate.Voucher.Name,
+			Balance:  voucherUpdate.Voucher.Balance,
+			Active:   voucherUpdate.Voucher.Active,
 		}
 	}
 	return c.JSON(200, voucherResponse{Message: "OK", Debtor: d, Voucher: v, Transaction: a.convTransaction(voucherUpdate.Transaction)})

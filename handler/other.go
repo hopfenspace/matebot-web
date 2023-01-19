@@ -47,11 +47,10 @@ func (a *API) Applications(c echo.Context) error {
 }
 
 type balanceResponse struct {
-	Message          string  `json:"message"`
-	UserID           *uint64 `json:"user_id"`
-	Username         *string `json:"username"`
-	Balance          int64   `json:"balance"`
-	BalanceFormatted string  `json:"balance_formatted"`
+	Message  string  `json:"message"`
+	UserID   *uint64 `json:"user_id"`
+	Username *string `json:"username"`
+	Balance  int64   `json:"balance"`
 }
 
 func (a *API) Balance(c echo.Context) error {
@@ -64,7 +63,7 @@ func (a *API) Balance(c echo.Context) error {
 		return nil
 	}
 	if *r.ID == coreUser.ID {
-		return c.JSON(200, balanceResponse{Message: "OK", UserID: r.ID, Username: &coreUser.Name, Balance: coreUser.Balance, BalanceFormatted: a.SDK.FormatBalance(coreUser.Balance)})
+		return c.JSON(200, balanceResponse{Message: "OK", UserID: r.ID, Username: &coreUser.Name, Balance: coreUser.Balance})
 	}
 	if coreUser.Privilege() < MateBotSDKGo.Vouched {
 		return c.JSON(400, GenericResponse{Message: "You are not permitted to request another user's balance."})
@@ -73,16 +72,15 @@ func (a *API) Balance(c echo.Context) error {
 	if err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
-	return c.JSON(200, balanceResponse{Message: "OK", UserID: &user.ID, Username: &user.Name, Balance: user.Balance, BalanceFormatted: a.SDK.FormatBalance(user.Balance)})
+	return c.JSON(200, balanceResponse{Message: "OK", UserID: &user.ID, Username: &user.Name, Balance: user.Balance})
 }
 
 type blameResponse struct {
-	Message          string  `json:"message"`
-	NobodyAvailable  bool    `json:"nobody_available"`
-	UserID           *uint64 `json:"user_id"`
-	Username         *string `json:"username"`
-	Balance          *int64  `json:"balance"`
-	BalanceFormatted *string `json:"balance_formatted"`
+	Message         string  `json:"message"`
+	NobodyAvailable bool    `json:"nobody_available"`
+	UserID          *uint64 `json:"user_id"`
+	Username        *string `json:"username"`
+	Balance         *int64  `json:"balance"`
 }
 
 func (a *API) Blame(c echo.Context) error {
@@ -95,22 +93,19 @@ func (a *API) Blame(c echo.Context) error {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	} else if sponsor == nil {
 		return c.JSON(200, blameResponse{
-			Message:          "Good news, nobody has to be blamed",
-			NobodyAvailable:  true,
-			UserID:           nil,
-			Username:         nil,
-			Balance:          nil,
-			BalanceFormatted: nil,
+			Message:         "Good news, nobody has to be blamed",
+			NobodyAvailable: true,
+			UserID:          nil,
+			Username:        nil,
+			Balance:         nil,
 		})
 	}
-	bF := a.SDK.FormatBalance(sponsor.Balance)
 	return c.JSON(200, blameResponse{
-		Message:          "There is a user who shall reduce his debts",
-		NobodyAvailable:  false,
-		UserID:           &sponsor.ID,
-		Username:         &sponsor.Name,
-		Balance:          &sponsor.Balance,
-		BalanceFormatted: &bF,
+		Message:         "There is a user who shall reduce his debts",
+		NobodyAvailable: false,
+		UserID:          &sponsor.ID,
+		Username:        &sponsor.Name,
+		Balance:         &sponsor.Balance,
 	})
 }
 
@@ -129,5 +124,5 @@ func (a *API) Zwegat(c echo.Context) error {
 	} else {
 		msg = fmt.Sprintf("Peter errechnet Gesamtschulden von %s!", a.SDK.FormatBalance(-balance))
 	}
-	return c.JSON(200, balanceResponse{Message: msg, UserID: nil, Username: nil, Balance: balance, BalanceFormatted: a.SDK.FormatBalance(balance)})
+	return c.JSON(200, balanceResponse{Message: msg, UserID: nil, Username: nil, Balance: balance})
 }

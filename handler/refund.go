@@ -24,19 +24,18 @@ type refundVoteResponse struct {
 }
 
 type refund struct {
-	ID              uint64       `json:"id"`
-	Amount          uint64       `json:"amount"`
-	AmountFormatted string       `json:"amount_formatted"`
-	Description     string       `json:"description"`
-	CreatorID       uint64       `json:"creator_id"`
-	CreatorName     string       `json:"creator_name"`
-	Active          bool         `json:"active"`
-	Created         uint64       `json:"created"`
-	Modified        uint64       `json:"modified"`
-	Allowed         *bool        `json:"allowed"`
-	BallotID        uint64       `json:"ballot_id"`
-	Votes           []vote       `json:"votes"`
-	Transaction     *transaction `json:"transaction"`
+	ID          uint64       `json:"id"`
+	Amount      uint64       `json:"amount"`
+	Description string       `json:"description"`
+	CreatorID   uint64       `json:"creator_id"`
+	CreatorName string       `json:"creator_name"`
+	Active      bool         `json:"active"`
+	Created     uint64       `json:"created"`
+	Modified    uint64       `json:"modified"`
+	Allowed     *bool        `json:"allowed"`
+	BallotID    uint64       `json:"ballot_id"`
+	Votes       []vote       `json:"votes"`
+	Transaction *transaction `json:"transaction"`
 }
 
 func (a *API) convRefund(r *MateBotSDKGo.Refund) *refund {
@@ -45,19 +44,18 @@ func (a *API) convRefund(r *MateBotSDKGo.Refund) *refund {
 		votes[i] = *a.convVote(r.Votes[i])
 	}
 	return &refund{
-		ID:              r.ID,
-		Amount:          r.Amount,
-		AmountFormatted: a.SDK.FormatBalance(int64(r.Amount)),
-		Description:     r.Description,
-		CreatorID:       r.Creator.ID,
-		CreatorName:     r.Creator.Name,
-		Active:          r.Active,
-		Created:         *r.Created,
-		Modified:        *r.Modified,
-		Allowed:         r.Allowed,
-		BallotID:        r.BallotID,
-		Votes:           votes,
-		Transaction:     a.convTransaction(r.Transaction),
+		ID:          r.ID,
+		Amount:      r.Amount,
+		Description: r.Description,
+		CreatorID:   r.Creator.ID,
+		CreatorName: r.Creator.Name,
+		Active:      r.Active,
+		Created:     *r.Created,
+		Modified:    *r.Modified,
+		Allowed:     r.Allowed,
+		BallotID:    r.BallotID,
+		Votes:       votes,
+		Transaction: a.convTransaction(r.Transaction),
 	}
 }
 
