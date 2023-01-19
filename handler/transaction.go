@@ -5,11 +5,18 @@ import (
 	"github.com/hopfenspace/MateBotSDKGo"
 	"github.com/labstack/echo/v4"
 	"github.com/myOmikron/echotools/utility"
+	"strconv"
 )
 
 type transactionResponse struct {
 	Message     string       `json:"message"`
 	Transaction *transaction `json:"transaction"`
+}
+
+type multipleTransactionsResponse struct {
+	Message      string         `json:"message"`
+	Count        int            `json:"count"`
+	Transactions []*transaction `json:"transactions"`
 }
 
 type transaction struct {
@@ -105,4 +112,20 @@ func (a *API) ConsumeTransaction(c echo.Context) error {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
 	return c.JSON(200, transactionResponse{Message: "OK", Transaction: a.convTransaction(t)})
+}
+
+func (a *API) ListTransactions(c echo.Context) error {
+	coreUser, _, err := a.getVerifiedCoreUser(c, nil)
+	if err != nil {
+		return err
+	}
+	transactions, err := a.SDK.GetTransactions(map[string]string{"member_id": strconv.Itoa(int(coreUser.ID))})
+	if err != nil {
+		return c.JSON(400, GenericResponse{Message: err.Error()})
+	}
+	formattedTransactions := make([]*transaction, len(transactions))
+	for i, t := range transactions {
+		formattedTransactions[i] = a.convTransaction(t)
+	}
+	return c.JSON(200, multipleTransactionsResponse{Message: "OK", Transactions: formattedTransactions, Count: len(formattedTransactions)})
 }

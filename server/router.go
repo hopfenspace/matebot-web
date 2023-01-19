@@ -37,6 +37,7 @@ func defineRoutes(e *echo.Echo, db *gorm.DB, config *conf.Config, client MateBot
 	e.POST("/api/frontend/deleteLocalAccount", api.DeleteLocalAccount)
 	e.POST("/api/frontend/deleteFullAccount", api.DeleteFullAccount)
 
+	e.GET("/api/frontend/getTransactions", api.ListTransactions) // only own transaction history
 	e.POST("/api/frontend/sendTransaction", api.SendTransaction)
 	e.POST("/api/frontend/consumeTransaction", api.ConsumeTransaction)
 
