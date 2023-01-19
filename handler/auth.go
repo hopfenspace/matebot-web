@@ -10,6 +10,7 @@ import (
 	"github.com/myOmikron/echotools/middleware"
 	"github.com/myOmikron/echotools/utility"
 	"github.com/myOmikron/echotools/utilitymodels"
+	"strconv"
 )
 
 type TestResponse struct {
@@ -98,7 +99,7 @@ func (a *API) Register(c echo.Context) error {
 	}
 
 	u := models.CoreUser{
-		UserID: localUser.ID,
+		UserID: uint64(localUser.ID),
 		CoreID: coreUser.ID,
 	}
 	if err := a.DB.Create(&u).Error; err != nil {
@@ -152,7 +153,7 @@ func (a *API) Connect(c echo.Context) error {
 	}
 
 	u := models.CoreUser{
-		UserID: localUser.ID,
+		UserID: uint64(localUser.ID),
 		CoreID: user.ID,
 	}
 	if err := a.DB.Create(&u).Error; err != nil {

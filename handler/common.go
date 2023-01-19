@@ -19,7 +19,7 @@ type eventNotification struct {
 
 type eventWrapper struct {
 	allUsers     bool
-	users        *[]uint
+	users        *[]uint64
 	minPrivilege MateBotSDKGo.PrivilegeLevel
 	notification eventNotification
 }
@@ -27,7 +27,7 @@ type eventWrapper struct {
 type eventChannelKey struct {
 	sessionID string
 	confirmed bool
-	coreID    uint
+	coreID    uint64
 	privilege MateBotSDKGo.PrivilegeLevel
 }
 
@@ -55,17 +55,22 @@ type GenericResponse struct {
 }
 
 type simpleID struct {
-	ID *uint `json:"id" echotools:"required"`
+	ID *uint64 `json:"id" echotools:"required"`
+}
+
+type namedObject struct {
+	ID   uint64 `json:"id"`
+	Name string `json:"name"`
 }
 
 type newMoneyRequest struct {
-	Amount      *uint   `json:"amount" echotools:"required"`
+	Amount      *uint64 `json:"amount" echotools:"required"`
 	Description *string `json:"description" echotools:"required;not empty"`
 }
 
 // Get the core user ID and the app's local user reference of the local authenticated user
 // but without any validity checks (e.g., whether the user even exists at the core server)
-func (a *API) getUnverifiedCoreID(c echo.Context) (uint, *utilitymodels.LocalUser, error) {
+func (a *API) getUnverifiedCoreID(c echo.Context) (uint64, *utilitymodels.LocalUser, error) {
 	if context, err := middleware.GetSessionContext(c); err != nil {
 		_ = c.JSON(500, GenericResponse{Message: "Unexpected failure"})
 		return 0, nil, err
@@ -107,7 +112,7 @@ func (a *API) getVerifiedCoreUser(c echo.Context, minimalLevel *MateBotSDKGo.Pri
 }
 
 // Return the local user ID for a given core user ID or nil if not found
-func (a *API) findLocalUserID(coreUserID uint) *uint {
+func (a *API) findLocalUserID(coreUserID uint64) *uint64 {
 	var user models.CoreUser
 	if err := a.DB.Find(&user, "core_id = ?", coreUserID).Error; err != nil {
 		return nil
@@ -117,7 +122,7 @@ func (a *API) findLocalUserID(coreUserID uint) *uint {
 }
 
 type vote struct {
-	UserID   uint   `json:"user_id"`
+	UserID   uint64 `json:"user_id"`
 	Username string `json:"username"`
 	Vote     bool   `json:"vote"`
 }

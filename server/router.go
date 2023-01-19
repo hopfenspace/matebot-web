@@ -20,8 +20,7 @@ func defineRoutes(e *echo.Echo, db *gorm.DB, config *conf.Config, client MateBot
 	e.POST("/api/frontend/test", api.Test)
 
 	e.GET("/api/frontend/consumables", api.Consumables)
-	e.GET("/api/frontend/applications", api.Applications)       // requires auth
-	e.GET("/api/frontend/applicationList", api.ApplicationList) // requires no auth
+	e.GET("/api/frontend/applications", api.Applications)
 	e.GET("/api/frontend/blame", api.Blame)
 	e.GET("/api/frontend/zwegat", api.Zwegat)
 	e.POST("/api/frontend/balance", api.Balance) // primarily for querying other users, use /me otherwise

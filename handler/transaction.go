@@ -15,24 +15,24 @@ type transactionResponse struct {
 
 type multipleTransactionsResponse struct {
 	Message      string         `json:"message"`
-	Count        int            `json:"count"`
+	Count        uint64         `json:"count"`
 	Transactions []*transaction `json:"transactions"`
 }
 
 type transaction struct {
-	Id        uint       `json:"id"`
+	Id        uint64     `json:"id"`
 	Sender    simpleUser `json:"sender"`
 	Receiver  simpleUser `json:"receiver"`
-	Amount    uint       `json:"amount"`
+	Amount    uint64     `json:"amount"`
 	Reason    *string    `json:"reason"`
-	Timestamp uint       `json:"timestamp"`
+	Timestamp uint64     `json:"timestamp"`
 }
 
 type multiTransaction struct {
-	BaseAmount   uint          `json:"base_amount"`
-	TotalAmount  uint          `json:"total_amount"`
+	BaseAmount   uint64        `json:"base_amount"`
+	TotalAmount  uint64        `json:"total_amount"`
 	Transactions []transaction `json:"transactions"`
-	Timestamp    uint          `json:"timestamp"`
+	Timestamp    uint64        `json:"timestamp"`
 }
 
 func (a *API) convTransaction(t *MateBotSDKGo.Transaction) *transaction {
@@ -61,7 +61,7 @@ func (a *API) convTransaction(t *MateBotSDKGo.Transaction) *transaction {
 
 type sendTransactionRequest struct {
 	Receiver any     `json:"receiver"`
-	Amount   *uint   `json:"amount" echotools:"required"`
+	Amount   *uint64 `json:"amount" echotools:"required"`
 	Reason   *string `json:"reason" echotools:"required;not empty"`
 }
 
@@ -94,7 +94,7 @@ func (a *API) SendTransaction(c echo.Context) error {
 }
 
 type consumeTransactionRequest struct {
-	Amount     *uint   `json:"amount" echotools:"required"`
+	Amount     *uint64 `json:"amount" echotools:"required"`
 	Consumable *string `json:"consumable" echotools:"required;not empty"`
 }
 
@@ -127,5 +127,5 @@ func (a *API) ListTransactions(c echo.Context) error {
 	for i, t := range transactions {
 		formattedTransactions[i] = a.convTransaction(t)
 	}
-	return c.JSON(200, multipleTransactionsResponse{Message: "OK", Transactions: formattedTransactions, Count: len(formattedTransactions)})
+	return c.JSON(200, multipleTransactionsResponse{Message: "OK", Transactions: formattedTransactions, Count: uint64(len(formattedTransactions))})
 }

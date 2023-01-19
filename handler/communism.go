@@ -17,15 +17,15 @@ type communismsResponse struct {
 }
 
 type communism struct {
-	ID               uint                                `json:"id"`
-	Amount           uint                                `json:"amount"`
+	ID               uint64                              `json:"id"`
+	Amount           uint64                              `json:"amount"`
 	AmountFormatted  string                              `json:"amount_formatted"`
 	Description      string                              `json:"description"`
-	CreatorID        uint                                `json:"creator_id"`
+	CreatorID        uint64                              `json:"creator_id"`
 	CreatorName      string                              `json:"creator_name"`
 	Active           bool                                `json:"active"`
-	Created          uint                                `json:"created"`
-	Modified         uint                                `json:"modified"`
+	Created          uint64                              `json:"created"`
+	Modified         uint64                              `json:"modified"`
 	Participants     []MateBotSDKGo.CommunismParticipant `json:"participants"`
 	MultiTransaction *multiTransaction                   `json:"multi_transaction"`
 }
@@ -48,7 +48,7 @@ func (a *API) convCommunism(c *MateBotSDKGo.Communism) *communism {
 	return &communism{
 		ID:               c.ID,
 		Amount:           c.Amount,
-		AmountFormatted:  a.SDK.FormatBalance(int(c.Amount)),
+		AmountFormatted:  a.SDK.FormatBalance(int64(c.Amount)),
 		Description:      c.Description,
 		CreatorID:        c.CreatorID,
 		Active:           c.Active,

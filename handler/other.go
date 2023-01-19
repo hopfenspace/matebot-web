@@ -24,8 +24,8 @@ func (a *API) Consumables(c echo.Context) error {
 }
 
 type applicationsResponse struct {
-	Message      string                      `json:"message"`
-	Applications []*MateBotSDKGo.Application `json:"applications"`
+	Message      string         `json:"message"`
+	Applications []*namedObject `json:"applications"`
 }
 
 func (a *API) Applications(c echo.Context) error {
@@ -36,31 +36,21 @@ func (a *API) Applications(c echo.Context) error {
 	if err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
-	return c.JSON(200, applicationsResponse{Message: "OK", Applications: applications})
-}
-
-type applicationListResponse struct {
-	Message      string   `json:"message"`
-	Applications []string `json:"applications"`
-}
-
-func (a *API) ApplicationList(c echo.Context) error {
-	applications, err := a.SDK.GetApplications(nil)
-	names := make([]string, len(applications))
-	for i := range applications {
-		names[i] = applications[i].Name
+	convertedApplications := make([]*namedObject, len(applications))
+	for i, a := range applications {
+		convertedApplications[i] = &namedObject{
+			ID:   a.ID,
+			Name: a.Name,
+		}
 	}
-	if err != nil {
-		return c.JSON(400, GenericResponse{Message: err.Error()})
-	}
-	return c.JSON(200, applicationListResponse{Message: "OK", Applications: names})
+	return c.JSON(200, applicationsResponse{Message: "OK", Applications: convertedApplications})
 }
 
 type balanceResponse struct {
 	Message          string  `json:"message"`
-	UserID           *uint   `json:"user_id"`
+	UserID           *uint64 `json:"user_id"`
 	Username         *string `json:"username"`
-	Balance          int     `json:"balance"`
+	Balance          int64   `json:"balance"`
 	BalanceFormatted string  `json:"balance_formatted"`
 }
 
@@ -89,9 +79,9 @@ func (a *API) Balance(c echo.Context) error {
 type blameResponse struct {
 	Message          string  `json:"message"`
 	NobodyAvailable  bool    `json:"nobody_available"`
-	UserID           *uint   `json:"user_id"`
+	UserID           *uint64 `json:"user_id"`
 	Username         *string `json:"username"`
-	Balance          *int    `json:"balance"`
+	Balance          *int64  `json:"balance"`
 	BalanceFormatted *string `json:"balance_formatted"`
 }
 
