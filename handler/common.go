@@ -18,10 +18,11 @@ type eventNotification struct {
 }
 
 type eventWrapper struct {
-	allUsers     bool
-	users        *[]uint64
-	minPrivilege MateBotSDKGo.PrivilegeLevel
-	notification eventNotification
+	allUsers      bool
+	users         *[]uint64
+	minPrivilege  MateBotSDKGo.PrivilegeLevel
+	confirmedOnly bool
+	notification  eventNotification
 }
 
 type eventChannelKey struct {
