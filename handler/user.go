@@ -40,8 +40,10 @@ type user struct {
 }
 
 type stateResponse struct {
-	Message string `json:"message"`
-	User    user   `json:"user"`
+	Message          string     `json:"message"`
+	DetailsAvailable bool       `json:"details_available"`
+	MinimalUser      simpleUser `json:"minimal_user"`
+	User             *user      `json:"user"`
 }
 
 type aliasResponse struct {
@@ -96,7 +98,29 @@ func (a *API) Me(c echo.Context) error {
 	if err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
-	return c.JSON(200, stateResponse{Message: "OK", User: *a.convUser(c, unverifiedCoreUser, localUser)})
+	if !a.SDK.IsUserConfirmed(unverifiedCoreUser) {
+		return c.JSON(200, stateResponse{
+			Message:          "OK",
+			DetailsAvailable: false,
+			User:             nil,
+			MinimalUser: simpleUser{
+				UserID:   &localUser.ID,
+				CoreID:   unverifiedCoreUser.ID,
+				Username: unverifiedCoreUser.Name,
+			},
+		})
+	}
+	coreUser := unverifiedCoreUser
+	return c.JSON(200, stateResponse{
+		Message:          "OK",
+		DetailsAvailable: true,
+		User:             a.convUser(c, coreUser, localUser),
+		MinimalUser: simpleUser{
+			UserID:   &localUser.ID,
+			CoreID:   coreUser.ID,
+			Username: coreUser.Name,
+		},
+	})
 }
 
 type nameRequest struct {
@@ -108,15 +132,24 @@ func (a *API) ChangeUsername(c echo.Context) error {
 	if err := utility.ValidateJsonForm(c, &r); err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
-	coreID, localUser, err := a.getVerifiedCoreUser(c, nil)
+	coreUser, localUser, err := a.getVerifiedCoreUser(c, nil)
 	if err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
-	user, err := a.SDK.SetUsername(coreID, *r.Name)
+	user, err := a.SDK.SetUsername(coreUser.ID, *r.Name)
 	if err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
-	return c.JSON(200, stateResponse{Message: "OK", User: *a.convUser(c, user, localUser)})
+	return c.JSON(200, stateResponse{
+		Message:          "OK",
+		DetailsAvailable: true,
+		User:             a.convUser(c, user, localUser),
+		MinimalUser: simpleUser{
+			UserID:   &localUser.ID,
+			CoreID:   user.ID,
+			Username: user.Name,
+		},
+	})
 }
 
 type voucherRequest struct {
