@@ -114,7 +114,7 @@ type ConnectRequest struct {
 	Username         *string `json:"username" echotools:"required;not empty"`
 	Password         *string `json:"password" echotools:"required;not empty"`
 	ExistingUsername *string `json:"existing_username" echotools:"required;not empty"`
-	Application      *string `json:"application" echotools:"required;not empty"`
+	Application      *uint64 `json:"application" echotools:"required;"`
 }
 
 func (a *API) Connect(c echo.Context) error {
@@ -132,7 +132,7 @@ func (a *API) Connect(c echo.Context) error {
 		return c.JSON(409, GenericResponse{Message: "User with that username already exists"})
 	}
 
-	users, err := a.SDK.GetUsers(map[string]string{"active": "true", "alias_confirmed": "true", "alias_username": *r.ExistingUsername, "alias_application": *r.Application})
+	users, err := a.SDK.GetUsers(map[string]string{"active": "true", "alias_confirmed": "true", "alias_username": *r.ExistingUsername, "alias_application_id": strconv.FormatUint(*r.Application, 10)})
 	if err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	} else if len(users) == 0 {

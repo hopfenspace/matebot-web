@@ -29,9 +29,6 @@ type applicationsResponse struct {
 }
 
 func (a *API) Applications(c echo.Context) error {
-	if _, _, err := a.getUnverifiedCoreID(c); err != nil {
-		return err
-	}
 	applications, err := a.SDK.GetApplications(nil)
 	if err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
