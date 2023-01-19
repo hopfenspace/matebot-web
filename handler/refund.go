@@ -24,17 +24,17 @@ type refundVoteResponse struct {
 }
 
 type refund struct {
-	ID              uint         `json:"id"`
-	Amount          uint         `json:"amount"`
+	ID              uint64       `json:"id"`
+	Amount          uint64       `json:"amount"`
 	AmountFormatted string       `json:"amount_formatted"`
 	Description     string       `json:"description"`
-	CreatorID       uint         `json:"creator_id"`
+	CreatorID       uint64       `json:"creator_id"`
 	CreatorName     string       `json:"creator_name"`
 	Active          bool         `json:"active"`
-	Created         uint         `json:"created"`
-	Modified        uint         `json:"modified"`
+	Created         uint64       `json:"created"`
+	Modified        uint64       `json:"modified"`
 	Allowed         *bool        `json:"allowed"`
-	BallotID        uint         `json:"ballot_id"`
+	BallotID        uint64       `json:"ballot_id"`
 	Votes           []vote       `json:"votes"`
 	Transaction     *transaction `json:"transaction"`
 }
@@ -47,7 +47,7 @@ func (a *API) convRefund(r *MateBotSDKGo.Refund) *refund {
 	return &refund{
 		ID:              r.ID,
 		Amount:          r.Amount,
-		AmountFormatted: a.SDK.FormatBalance(int(r.Amount)),
+		AmountFormatted: a.SDK.FormatBalance(int64(r.Amount)),
 		Description:     r.Description,
 		CreatorID:       r.Creator.ID,
 		CreatorName:     r.Creator.Name,

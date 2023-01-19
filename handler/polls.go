@@ -25,17 +25,17 @@ type pollVoteResponse struct {
 }
 
 type poll struct {
-	ID          uint                     `json:"id"`
+	ID          uint64                   `json:"id"`
 	Active      bool                     `json:"active"`
 	Accepted    *bool                    `json:"accepted"`
 	Variant     MateBotSDKGo.PollVariant `json:"variant"`
-	UserID      uint                     `json:"user_id"`
+	UserID      uint64                   `json:"user_id"`
 	UserName    string                   `json:"user_name"`
-	CreatorID   uint                     `json:"creator_id"`
+	CreatorID   uint64                   `json:"creator_id"`
 	CreatorName string                   `json:"creator_name"`
-	Created     uint                     `json:"created"`
-	Modified    uint                     `json:"modified"`
-	BallotID    uint                     `json:"ballot_id"`
+	Created     uint64                   `json:"created"`
+	Modified    uint64                   `json:"modified"`
+	BallotID    uint64                   `json:"ballot_id"`
 	Votes       []vote                   `json:"votes"`
 }
 

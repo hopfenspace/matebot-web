@@ -10,24 +10,24 @@ import (
 )
 
 type simpleUser struct {
-	UserID   *uint  `json:"user_id"`
-	CoreID   uint   `json:"core_id"`
-	Username string `json:"username"`
+	UserID   *uint64 `json:"user_id"`
+	CoreID   uint64  `json:"core_id"`
+	Username string  `json:"username"`
 }
 
 type debtorUser struct {
-	UserID           uint   `json:"user_id"`
+	UserID           uint64 `json:"user_id"`
 	Username         string `json:"username"`
-	Balance          int    `json:"balance"`
+	Balance          int64  `json:"balance"`
 	BalanceFormatted string `json:"balance_formatted"`
 	Active           bool   `json:"active"`
 }
 
 type user struct {
-	UserID           uint                 `json:"user_id"`
-	CoreID           uint                 `json:"core_id"`
+	UserID           uint64               `json:"user_id"`
+	CoreID           uint64               `json:"core_id"`
 	Username         string               `json:"username"`
-	Balance          int                  `json:"balance"`
+	Balance          int64                `json:"balance"`
 	BalanceFormatted string               `json:"balance_formatted"`
 	Permission       bool                 `json:"permission"`
 	Active           bool                 `json:"active"`
@@ -35,8 +35,8 @@ type user struct {
 	VoucherID        interface{}          `json:"voucher_id"`
 	Aliases          []MateBotSDKGo.Alias `json:"aliases"`
 	Debtors          []debtorUser         `json:"debtors"`
-	Created          uint                 `json:"created"`
-	Modified         uint                 `json:"modified"`
+	Created          uint64               `json:"created"`
+	Modified         uint64               `json:"modified"`
 }
 
 type stateResponse struct {
@@ -58,7 +58,7 @@ type listResponse struct {
 
 func (a *API) convUser(c echo.Context, coreUser *MateBotSDKGo.User, localUser *utilitymodels.LocalUser) *user {
 	debtors := make([]debtorUser, 0)
-	users, err := a.SDK.GetUsers(map[string]string{"active": "true", "voucher_id": strconv.Itoa(int(coreUser.ID)), "community": "false"})
+	users, err := a.SDK.GetUsers(map[string]string{"active": "true", "voucher_id": strconv.FormatUint(coreUser.ID, 10), "community": "false"})
 	if err != nil {
 		c.Logger().Error("Failed to lookup debtor users: ", err.Error())
 	} else {
@@ -73,7 +73,7 @@ func (a *API) convUser(c echo.Context, coreUser *MateBotSDKGo.User, localUser *u
 		}
 	}
 	return &user{
-		UserID:           localUser.ID,
+		UserID:           uint64(localUser.ID),
 		CoreID:           coreUser.ID,
 		Username:         coreUser.Name,
 		Balance:          coreUser.Balance,
@@ -98,13 +98,14 @@ func (a *API) Me(c echo.Context) error {
 	if err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
+	localID := uint64(localUser.ID)
 	if !a.SDK.IsUserConfirmed(unverifiedCoreUser) {
 		return c.JSON(200, stateResponse{
 			Message:          "OK",
 			DetailsAvailable: false,
 			User:             nil,
 			MinimalUser: simpleUser{
-				UserID:   &localUser.ID,
+				UserID:   &localID,
 				CoreID:   unverifiedCoreUser.ID,
 				Username: unverifiedCoreUser.Name,
 			},
@@ -116,7 +117,7 @@ func (a *API) Me(c echo.Context) error {
 		DetailsAvailable: true,
 		User:             a.convUser(c, coreUser, localUser),
 		MinimalUser: simpleUser{
-			UserID:   &localUser.ID,
+			UserID:   &localID,
 			CoreID:   coreUser.ID,
 			Username: coreUser.Name,
 		},
@@ -140,12 +141,13 @@ func (a *API) ChangeUsername(c echo.Context) error {
 	if err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
 	}
+	localID := uint64(localUser.ID)
 	return c.JSON(200, stateResponse{
 		Message:          "OK",
 		DetailsAvailable: true,
 		User:             a.convUser(c, user, localUser),
 		MinimalUser: simpleUser{
-			UserID:   &localUser.ID,
+			UserID:   &localID,
 			CoreID:   user.ID,
 			Username: user.Name,
 		},
@@ -164,7 +166,7 @@ type voucherResponse struct {
 }
 
 // Only call this function with validated user IDs!
-func (a *API) handleVouching(c echo.Context, voucher *uint, issuer uint) error {
+func (a *API) handleVouching(c echo.Context, voucher *uint64, issuer uint64) error {
 	var r voucherRequest
 	if err := utility.ValidateJsonForm(c, &r); err != nil {
 		return c.JSON(400, GenericResponse{Message: err.Error()})
@@ -248,7 +250,7 @@ func (a *API) ConfirmAlias(c echo.Context) error {
 
 type deletionResponse struct {
 	Message string               `json:"message"`
-	UserID  uint                 `json:"user_id"`
+	UserID  uint64               `json:"user_id"`
 	Aliases []MateBotSDKGo.Alias `json:"aliases"`
 }
 
