@@ -5,7 +5,6 @@ import (
 	"github.com/hopfenspace/matebot-web/models"
 	"github.com/labstack/echo/v4"
 	"github.com/myOmikron/echotools/utility"
-	"github.com/myOmikron/echotools/utilitymodels"
 	"strconv"
 )
 
@@ -23,7 +22,7 @@ type debtorUser struct {
 }
 
 type user struct {
-	UserID     uint64               `json:"user_id"`
+	UserID     *uint64              `json:"user_id"`
 	CoreID     uint64               `json:"core_id"`
 	Username   string               `json:"username"`
 	Balance    int64                `json:"balance"`
@@ -54,11 +53,11 @@ type listResponse struct {
 	Users   []simpleUser `json:"users"`
 }
 
-func (a *API) convUser(c echo.Context, coreUser *MateBotSDKGo.User, localUser *utilitymodels.LocalUser) *user {
+func (a *API) convUser(coreUser *MateBotSDKGo.User, localUserID *uint64, logger echo.Logger) *user {
 	debtors := make([]debtorUser, 0)
 	users, err := a.SDK.GetUsers(map[string]string{"active": "true", "voucher_id": strconv.FormatUint(coreUser.ID, 10), "community": "false"})
 	if err != nil {
-		c.Logger().Error("Failed to lookup debtor users: ", err.Error())
+		logger.Error("Failed to lookup debtor users: ", err.Error())
 	} else {
 		for _, u := range users {
 			debtors = append(debtors, debtorUser{
@@ -70,7 +69,7 @@ func (a *API) convUser(c echo.Context, coreUser *MateBotSDKGo.User, localUser *u
 		}
 	}
 	return &user{
-		UserID:     uint64(localUser.ID),
+		UserID:     localUserID,
 		CoreID:     coreUser.ID,
 		Username:   coreUser.Name,
 		Balance:    coreUser.Balance,
@@ -108,10 +107,11 @@ func (a *API) Me(c echo.Context) error {
 		})
 	}
 	coreUser := unverifiedCoreUser
+	l := uint64(localUser.ID)
 	return c.JSON(200, stateResponse{
 		Message:          "OK",
 		DetailsAvailable: true,
-		User:             a.convUser(c, coreUser, localUser),
+		User:             a.convUser(coreUser, &l, c.Logger()),
 		MinimalUser: simpleUser{
 			UserID:   &localID,
 			CoreID:   coreUser.ID,
@@ -141,7 +141,7 @@ func (a *API) ChangeUsername(c echo.Context) error {
 	return c.JSON(200, stateResponse{
 		Message:          "OK",
 		DetailsAvailable: true,
-		User:             a.convUser(c, user, localUser),
+		User:             a.convUser(user, &localID, nil),
 		MinimalUser: simpleUser{
 			UserID:   &localID,
 			CoreID:   user.ID,
