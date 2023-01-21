@@ -26,7 +26,7 @@ func defineRoutes(e *echo.Echo, db *gorm.DB, config *conf.Config, client MateBot
 	e.POST("/api/frontend/balance", api.Balance) // primarily for querying other users, use /me otherwise
 
 	e.GET("/api/frontend/me", api.Me)
-	e.GET("/api/frontend/listUsers", api.ListUsers)
+	e.GET("/api/frontend/users", api.ListUsers)
 	e.POST("/api/frontend/changeUsername", api.ChangeUsername) // only changes global username, not local username
 	e.POST("/api/frontend/startVouching", api.StartVouching)
 	e.POST("/api/frontend/stopVouching", api.StopVouching)
@@ -36,7 +36,7 @@ func defineRoutes(e *echo.Echo, db *gorm.DB, config *conf.Config, client MateBot
 	e.POST("/api/frontend/deleteLocalAccount", api.DeleteLocalAccount)
 	e.POST("/api/frontend/deleteFullAccount", api.DeleteFullAccount)
 
-	e.GET("/api/frontend/getTransactions", api.ListTransactions) // only own transaction history
+	e.GET("/api/frontend/transactions", api.ListTransactions) // only own transaction history
 	e.POST("/api/frontend/sendTransaction", api.SendTransaction)
 	e.POST("/api/frontend/consumeTransaction", api.ConsumeTransaction)
 

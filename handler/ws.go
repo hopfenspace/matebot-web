@@ -41,16 +41,14 @@ func (a *API) WebSocket(c echo.Context) error {
 
 	websocket.Handler(func(ws *websocket.Conn) {
 		defer func(ws *websocket.Conn) {
-			err := ws.Close()
-			if err != nil {
+			if err := ws.Close(); err != nil {
 				c.Logger().Error(err)
 				delete(*a.EventChannels, key)
 			}
 		}(ws)
 		for {
 			data := <-incoming
-			err = websocket.JSON.Send(ws, data)
-			if err != nil {
+			if err := websocket.JSON.Send(ws, data); err != nil {
 				c.Logger().Error(err)
 				delete(*a.EventChannels, key)
 				return
