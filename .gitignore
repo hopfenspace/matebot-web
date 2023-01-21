@@ -9,3 +9,5 @@ node_modules/
 Vagrantfileyarn.lock
 Vagrantfile
 go.sum
+*.sqlite3
+*.db
