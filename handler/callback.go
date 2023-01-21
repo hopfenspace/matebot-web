@@ -11,6 +11,12 @@ import (
 	"strings"
 )
 
+type smallVoucherUpdate struct {
+	Debtor      debtorUser   `json:"debtor"`
+	Voucher     *uint64      `json:"voucher"`
+	Transaction *transaction `json:"transaction"`
+}
+
 func (a *API) makeNotification(event MateBotSDKGo.Event, logger echo.Logger) (*eventWrapper, error) {
 	data := event.Data
 	var receivers *[]uint64 = nil
@@ -57,16 +63,74 @@ func (a *API) makeNotification(event MateBotSDKGo.Event, logger echo.Logger) (*e
 			receivers = &rs
 			reply = a.convCommunism(communisms[0])
 		}
-	case MateBotSDKGo.PollCreated:
-	case MateBotSDKGo.PollUpdated:
-	case MateBotSDKGo.PollClosed:
-	case MateBotSDKGo.RefundCreated:
-	case MateBotSDKGo.RefundUpdated:
-	case MateBotSDKGo.RefundClosed:
+	case MateBotSDKGo.PollCreated, MateBotSDKGo.PollUpdated, MateBotSDKGo.PollClosed:
+		if data.ID == nil {
+			return nil, errors.New(fmt.Sprintf("Invalid incoming callback event %s, because expected fields were unset", event.Event))
+		}
+		if polls, err := a.SDK.GetPolls(map[string]string{"id": strconv.FormatUint(*data.ID, 10)}); err != nil || len(polls) != 1 {
+			return nil, err
+		} else {
+			m := MateBotSDKGo.Permitted
+			minPrivilege = &m
+			receivers = &[]uint64{polls[0].CreatorID, polls[0].User.ID}
+			reply = a.convPoll(polls[0])
+		}
+	case MateBotSDKGo.RefundCreated, MateBotSDKGo.RefundUpdated, MateBotSDKGo.RefundClosed:
+		if data.ID == nil {
+			return nil, errors.New(fmt.Sprintf("Invalid incoming callback event %s, because expected fields were unset", event.Event))
+		}
+		if refunds, err := a.SDK.GetRefunds(map[string]string{"id": strconv.FormatUint(*data.ID, 10)}); err != nil || len(refunds) != 1 {
+			return nil, err
+		} else {
+			m := MateBotSDKGo.Permitted
+			minPrivilege = &m
+			receivers = &[]uint64{refunds[0].Creator.ID}
+			reply = a.convRefund(refunds[0])
+		}
 	case MateBotSDKGo.TransactionCreated:
+		if data.ID == nil {
+			return nil, errors.New(fmt.Sprintf("Invalid incoming callback event %s, because expected fields were unset", event.Event))
+		}
+		if transactions, err := a.SDK.GetTransactions(map[string]string{"id": strconv.FormatUint(*data.ID, 10)}); err != nil || len(transactions) != 1 {
+			return nil, err
+		} else {
+			m := MateBotSDKGo.Permitted
+			minPrivilege = &m
+			receivers = &[]uint64{transactions[0].Sender.ID, transactions[0].Receiver.ID}
+			reply = a.convTransaction(transactions[0])
+		}
 	case MateBotSDKGo.VoucherUpdated:
+		if data.ID == nil {
+			return nil, errors.New(fmt.Sprintf("Invalid incoming callback event %s, because expected fields were unset", event.Event))
+		}
+		if user, err := a.SDK.GetUser(*data.ID, nil); err != nil {
+			return nil, err
+		} else {
+			d := debtorUser{
+				UserID:   user.ID,
+				Username: user.Name,
+				Balance:  user.Balance,
+				Active:   user.Active,
+			}
+			var t *transaction = nil
+			if data.Transaction != nil {
+				if ts, err := a.SDK.GetTransactions(map[string]string{"id": strconv.FormatUint(*data.Transaction, 10)}); err == nil && len(ts) != 1 {
+					t = a.convTransaction(ts[0])
+				}
+			}
+			v := data.Voucher
+			if data.Voucher != nil {
+				if *data.Voucher != *user.VoucherID {
+					logger.Error("Voucher as determined by new lookup differs from voucher in callback event data (using newly looked up data)!")
+					v = user.VoucherID
+				}
+				receivers = &[]uint64{*data.ID, *data.Voucher}
+			} else {
+				receivers = &[]uint64{*data.ID}
+			}
+			reply = smallVoucherUpdate{Debtor: d, Voucher: v, Transaction: t}
+		}
 	case MateBotSDKGo.UserSoftlyDeleted:
-	case MateBotSDKGo.UserUpdated:
 		if data.ID == nil {
 			return nil, errors.New(fmt.Sprintf("Invalid incoming callback event %s, because expected fields were unset", event.Event))
 		}
@@ -74,7 +138,19 @@ func (a *API) makeNotification(event MateBotSDKGo.Event, logger echo.Logger) (*e
 			return nil, err
 		} else {
 			receivers = &[]uint64{*data.ID}
-			reply = user // TODO: convert the user to our schema
+			reply = a.convUser(user, a.findLocalUserID(user.ID), logger)
+		}
+	case MateBotSDKGo.UserUpdated:
+		if data.ID == nil {
+			return nil, errors.New(fmt.Sprintf("Invalid incoming callback event %s, because expected fields were unset", event.Event))
+		}
+		if user, err := a.SDK.GetUser(data.ID, nil); err != nil {
+			return nil, err
+		} else if user.Active {
+			return nil, errors.New(fmt.Sprintf("User %d seems to be active, even though a callback event USER_SOFTLY_DELETED has been received", *data.ID))
+		} else {
+			receivers = &[]uint64{*data.ID}
+			reply = a.convUser(user, a.findLocalUserID(user.ID), logger)
 		}
 	default:
 		logger.Errorf("Unknown callback event type or type handler not implemented: '%s'", event.Event)
