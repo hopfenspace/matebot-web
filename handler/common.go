@@ -18,9 +18,8 @@ type eventNotification struct {
 }
 
 type eventWrapper struct {
-	allUsers      bool
-	users         *[]uint64
-	minPrivilege  MateBotSDKGo.PrivilegeLevel
+	receivers     *[]uint64
+	minPrivilege  *MateBotSDKGo.PrivilegeLevel
 	confirmedOnly bool
 	notification  eventNotification
 }
@@ -120,6 +119,23 @@ func (a *API) findLocalUserID(coreUserID uint64) *uint64 {
 	}
 	u := user.UserID
 	return &u
+}
+
+func (a *API) getAllCoreUserIDs() (*[]uint64, error) {
+	var allUsers []models.CoreUser
+	if err := a.DB.Find(&allUsers).Error; err != nil {
+		return nil, err
+	}
+	coreUserMapping := make(map[uint64]bool)
+	for _, u := range allUsers {
+		coreUserMapping[u.CoreID] = true
+	}
+	_ = coreUserMapping
+	coreUserIDs := make([]uint64, 0, len(allUsers))
+	for u := range coreUserMapping {
+		coreUserIDs = append(coreUserIDs, u)
+	}
+	return &coreUserIDs, nil
 }
 
 type vote struct {
