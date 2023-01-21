@@ -21,8 +21,6 @@ type AllowedHost struct {
 
 type Server struct {
 	Listen                  string
-	TemplateDir             string
-	StaticDir               string
 	AllowedHosts            []AllowedHost
 	UseForwardedProtoHeader bool
 }
