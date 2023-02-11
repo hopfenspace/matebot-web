@@ -3,7 +3,6 @@ import exp from "constants";
 export type Application = {
     id: number;
     name: string;
-    created: number;
 };
 
 export type Alias = {
@@ -77,6 +76,8 @@ export type ApplicationResponse = {
     message: string;
     applications: Array<Application>;
 };
+
+export type BlameResponse = {};
 
 export type BalanceResponse = {
     message: string;

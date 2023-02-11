@@ -61,7 +61,7 @@ export const Api = {
         username: string,
         password: string,
         existing_username: string,
-        application: string
+        application_id: number
     ): Promise<Result<null, string>> => {
         const res = await fetch("/api/frontend/connectAccount", {
             method: "post",
@@ -69,7 +69,7 @@ export const Api = {
                 username,
                 password,
                 existing_username,
-                application,
+                application_id,
             }),
         });
 

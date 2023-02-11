@@ -8,6 +8,7 @@ import Home from "./views/home";
 import Login from "./views/login";
 import Register from "./views/register";
 import { ToastContainer } from "react-toastify";
+import { Api } from "./api/api";
 
 type RootProps = {};
 
@@ -54,15 +55,22 @@ export default class Root extends React.Component<RootProps, RootState> {
                 path.shift();
             }
 
-            this.setState({ path, state_set: true });
+            this.setState({ path });
         };
 
         setPath();
         window.addEventListener("hashchange", setPath);
+
+        Api.test().then((v) => {
+            if (v === "logged out") {
+                document.location.hash = "/login";
+            }
+            this.setState({ state_set: true });
+        });
     }
 
     render() {
-        const { path, state_set } = this.state;
+        const { path, state_set, loggedIn } = this.state;
 
         // If we haven't set our state, don't render yet
         if (!state_set) {

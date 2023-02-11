@@ -66,7 +66,7 @@ export default class Register extends React.Component<RegisterProps, RegisterSta
             )
         ).match(
             (_) => {
-                toast.success("Connected account successfully");
+                toast.success("Account connection request sent. Accept it on the selected application.");
                 window.location.hash = "/login";
             },
             (err) => {
